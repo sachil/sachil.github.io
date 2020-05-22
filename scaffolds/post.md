@@ -5,4 +5,5 @@ date: {{ date }}
 urlname:
 categories:
 tags:
+mathjax: true
 ---

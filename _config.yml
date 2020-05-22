@@ -4,7 +4,7 @@
 
 # Site
 title: Sachil's Blog
-subtitle: 蜻蜓队长
+subtitle: 技术分享
 description: Android Python Kotlin
 keywords: Android,Python,Kotlin
 author: Sachil
@@ -74,6 +74,7 @@ pagination_dir: page
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
 theme: next
+plugins: hexo-generate-feed
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
