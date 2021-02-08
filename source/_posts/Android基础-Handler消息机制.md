@@ -35,7 +35,7 @@ Handler消息机制主要由4部分组成：`Handler`、`MessageQueue`、`Looper
 
 ### Looper
 
-虽然`MessageQueue`提供了`Message`入队、出队的方法，但是它并不是自动取出消息，想要从`MessageQueue`中取出消息，则需要`Looper`来执行。**创建`Handler`之前，必须先创建`Looper，否则会发生异常`**，一般线程默认是不会创建`Looper`的，需要我们主动创建，而主线程已经默认为我们创建了`Looper`，所以我们可以直接在主线程中创建`Handler`。创建`Looper`可以通过`Looper.prepare()`方法，创建`Looper`实例的时候，同时会创建`MessageQueue`实例，并且关联到当前线程，每个线程的`Looper`是通过`ThreadLocal`存储的，保证其线程私有。
+虽然`MessageQueue`提供了`Message`入队、出队的方法，但是它并不是自动取出消息，想要从`MessageQueue`中取出消息，则需要`Looper`来执行。**创建`Handler`之前，必须先创建`Looper`，否则会发生异常**，一般线程默认是不会创建`Looper`的，需要我们主动创建，而主线程已经默认为我们创建了`Looper`，所以我们可以直接在主线程中创建`Handler`。创建`Looper`可以通过`Looper.prepare()`方法，创建`Looper`实例的时候，同时会创建`MessageQueue`实例，并且关联到当前线程，每个线程的`Looper`是通过`ThreadLocal`存储的，保证其线程私有。
 
 想要使`MessageQueue`运转起来，则需要调用`Looper.loop()`方法，这是一个死循环，不停的从`MessageQueue`中取出消息，取出消息后交由`Handler`来分发，分发之后回收`Message`到消息池，以便重复利用。取出消息调用的是`MessageQueue`的`next()`方法，而分发消息则调用的是`Handler`的`dispatchMessage()`方法，该方法会调用`Handler`的`HandleMessage（）`方法。
 
@@ -75,3 +75,15 @@ Runnable callback : 通过 post() 发送的消息会有此参数
 - **Handler发生泄露的原因以及解决方法？**
 
   `Handler`允许发送延时消息，而在延时的期间用户关闭了`Activity`，由于`Message`持有`Handler`对象，而由于Java特性，内部类持有外部类的引用，所以`Handler`持有`Activity`，所以`Activity`就泄露了。解决方案是将`Handler`改为静态内部类，其内部持有`Activity`的**弱引用**，并且在`Activity`的`onDestory()`回调中调用`handler.removeCallbacksAndMessages()`方法，及时移除所有消息。
+  
+- **Handler能够切换线程的最主要原因是什么？**
+
+  其实就是一句话，Handler实例是存储在**堆区**，这个区域对于同一进程的不同线程是共享的。所以可以在A线程访问B线程的Handler，并向这个Handler所持有的MessageQueue插入Message，而B线程通过自己的Looper的loop()方法，获取到Message，并通过Message的target调用该Handler的dispatchMessage()方法，进而调用handleMessage()回调方法。
+
+- **Handler的同步屏障机制**
+
+  同步屏障机制实际上是一个对消息队列MessageQueue附加优先级的机制，众所周知，MessageQueue是单链表结构，其中Message的排列顺序是按照Message的触发时间的先后顺序排列的。但是有的时候，一些事件需要立即得到处理，这就需要插队了。Handler可以发送**同步信息**和**异步信息**两种信息(我们平时主要用到的是前者)，开启同步屏障可以在MessageQueue的next()方法被调用时只处理异步信息，同步信息将会被无视。调用`postSyncBarrier()`开启同步屏障，关闭同步屏障可以调用`removeSyncBarrier()`(这两个方法不能在APP中调用)。同步屏障机制的实现原理是在MessageQueue的首部插入一条target为null的Message，这条message就相当于一个标志位，在`next()`方法中会去判断这个标志位，从而实现屏蔽同步信息的功能。
+
+- **MessageQueue中的IdleHandler**
+
+  `IdleHandler`实际上是一个接口，其用处从本质上讲就是在MessageQueue空闲的时候做一些事情，它只有一个方法`boolean queueIdle()`，其返回值如果为`true`则表示下次空闲的时候仍会执行这条消息，为`false`的话则只会执行一次，在执行完毕后会移出这条消息。`queueIdle()`执行的时机一个是messageQueue中没有message或者message的执行事件还未到时，在实际开发中用到很少，因为它的执行时机很不确定，`queueIdle`方法执行的线程是Looper所在的线程，也就是messageQueue所绑定的线程。
