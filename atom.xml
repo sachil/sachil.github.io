@@ -3,11 +3,11 @@
   <title>Sachil&#39;s Blog</title>
   
   <subtitle>为天地立心，为生民立命&lt;br&gt;为往圣继绝学，为天下安太平</subtitle>
-  <link href="https://sachil.xyz/atom.xml" rel="self"/>
+  <link href="https://www.sachil.xyz/atom.xml" rel="self"/>
   
-  <link href="https://sachil.xyz/"/>
+  <link href="https://www.sachil.xyz/"/>
   <updated>2023-06-20T15:46:03.207Z</updated>
-  <id>https://sachil.xyz/</id>
+  <id>https://www.sachil.xyz/</id>
   
   <author>
     <name>Sachil</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Kotlin中的泛型</title>
-    <link href="https://sachil.xyz/posts/e6adb2c5/"/>
-    <id>https://sachil.xyz/posts/e6adb2c5/</id>
+    <link href="https://www.sachil.xyz/posts/e6adb2c5/"/>
+    <id>https://www.sachil.xyz/posts/e6adb2c5/</id>
     <published>2020-09-22T09:53:43.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -33,19 +33,19 @@ T&amp;gt;来支持&lt;strong&gt;逆变&lt;/strong&gt;。在&lt;code&gt;Kotlin&lt
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="泛型" scheme="https://sachil.xyz/tags/Generics/"/>
+    <category term="泛型" scheme="https://www.sachil.xyz/tags/Generics/"/>
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的let、with、run、apply和also</title>
-    <link href="https://sachil.xyz/posts/14df605f/"/>
-    <id>https://sachil.xyz/posts/14df605f/</id>
+    <link href="https://www.sachil.xyz/posts/14df605f/"/>
+    <id>https://www.sachil.xyz/posts/14df605f/</id>
     <published>2020-08-02T12:17:40.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -62,19 +62,19 @@ id=&quot;kotlin中的letwithrunapply和also&quot;&gt;Kotlin中的let、with、ru
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="作用域函数" scheme="https://sachil.xyz/tags/Scope-Functions/"/>
+    <category term="作用域函数" scheme="https://www.sachil.xyz/tags/Scope-Functions/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的Sequence与Collection</title>
-    <link href="https://sachil.xyz/posts/49c621ce/"/>
-    <id>https://sachil.xyz/posts/49c621ce/</id>
+    <link href="https://www.sachil.xyz/posts/49c621ce/"/>
+    <id>https://www.sachil.xyz/posts/49c621ce/</id>
     <published>2020-07-10T11:08:12.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -90,21 +90,21 @@ id=&quot;kotlin中的sequence与collection&quot;&gt;Kotlin中的Sequence与Colle
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="Sequence" scheme="https://sachil.xyz/tags/Sequence/"/>
+    <category term="Sequence" scheme="https://www.sachil.xyz/tags/Sequence/"/>
     
-    <category term="Collection" scheme="https://sachil.xyz/tags/Collection/"/>
+    <category term="Collection" scheme="https://www.sachil.xyz/tags/Collection/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的密封类</title>
-    <link href="https://sachil.xyz/posts/1ead3946/"/>
-    <id>https://sachil.xyz/posts/1ead3946/</id>
+    <link href="https://www.sachil.xyz/posts/1ead3946/"/>
+    <id>https://www.sachil.xyz/posts/1ead3946/</id>
     <published>2020-07-04T03:50:47.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -122,21 +122,21 @@ class),通常来说它代表的意思是子类可数，你可以为不同的子�
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="密封类" scheme="https://sachil.xyz/tags/Sealed-Class/"/>
+    <category term="密封类" scheme="https://www.sachil.xyz/tags/Sealed-Class/"/>
     
-    <category term="枚举类" scheme="https://sachil.xyz/tags/Enum-Class/"/>
+    <category term="枚举类" scheme="https://www.sachil.xyz/tags/Enum-Class/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的内联类</title>
-    <link href="https://sachil.xyz/posts/8e647fe3/"/>
-    <id>https://sachil.xyz/posts/8e647fe3/</id>
+    <link href="https://www.sachil.xyz/posts/8e647fe3/"/>
+    <id>https://www.sachil.xyz/posts/8e647fe3/</id>
     <published>2020-06-20T03:31:26.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -158,19 +158,19 @@ class),通常来说它代表的意思是子类可数，你可以为不同的子�
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="内联类" scheme="https://sachil.xyz/tags/Inline-Class/"/>
+    <category term="内联类" scheme="https://www.sachil.xyz/tags/Inline-Class/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin的内联函数</title>
-    <link href="https://sachil.xyz/posts/93d266b8/"/>
-    <id>https://sachil.xyz/posts/93d266b8/</id>
+    <link href="https://www.sachil.xyz/posts/93d266b8/"/>
+    <id>https://www.sachil.xyz/posts/93d266b8/</id>
     <published>2020-06-13T06:29:40.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -188,23 +188,23 @@ class),通常来说它代表的意思是子类可数，你可以为不同的子�
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="Lambda表达式" scheme="https://sachil.xyz/tags/Lambda/"/>
+    <category term="Lambda表达式" scheme="https://www.sachil.xyz/tags/Lambda/"/>
     
-    <category term="高阶函数" scheme="https://sachil.xyz/tags/High-Order-Function/"/>
+    <category term="高阶函数" scheme="https://www.sachil.xyz/tags/High-Order-Function/"/>
     
-    <category term="内联函数" scheme="https://sachil.xyz/tags/Inline-Functions/"/>
+    <category term="内联函数" scheme="https://www.sachil.xyz/tags/Inline-Functions/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的扩展函数与扩展属性</title>
-    <link href="https://sachil.xyz/posts/4df1dcac/"/>
-    <id>https://sachil.xyz/posts/4df1dcac/</id>
+    <link href="https://www.sachil.xyz/posts/4df1dcac/"/>
+    <id>https://www.sachil.xyz/posts/4df1dcac/</id>
     <published>2020-06-07T07:26:07.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -218,21 +218,21 @@ Properties)&lt;/strong&gt;。&lt;/p&gt;</summary>
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="扩展函数" scheme="https://sachil.xyz/tags/Extension-Functions/"/>
+    <category term="扩展函数" scheme="https://www.sachil.xyz/tags/Extension-Functions/"/>
     
-    <category term="扩展属性" scheme="https://sachil.xyz/tags/Extension-Properties/"/>
+    <category term="扩展属性" scheme="https://www.sachil.xyz/tags/Extension-Properties/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的Lambda表达式</title>
-    <link href="https://sachil.xyz/posts/c6661a47/"/>
-    <id>https://sachil.xyz/posts/c6661a47/</id>
+    <link href="https://www.sachil.xyz/posts/c6661a47/"/>
+    <id>https://www.sachil.xyz/posts/c6661a47/</id>
     <published>2020-05-23T06:38:39.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -248,23 +248,23 @@ Properties)&lt;/strong&gt;。&lt;/p&gt;</summary>
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="Lambda表达式" scheme="https://sachil.xyz/tags/Lambda/"/>
+    <category term="Lambda表达式" scheme="https://www.sachil.xyz/tags/Lambda/"/>
     
-    <category term="高阶函数" scheme="https://sachil.xyz/tags/High-Order-Function/"/>
+    <category term="高阶函数" scheme="https://www.sachil.xyz/tags/High-Order-Function/"/>
     
-    <category term="匿名函数" scheme="https://sachil.xyz/tags/Anonymous-Function/"/>
+    <category term="匿名函数" scheme="https://www.sachil.xyz/tags/Anonymous-Function/"/>
     
   </entry>
   
   <entry>
     <title>算法图解心得</title>
-    <link href="https://sachil.xyz/posts/539438d6/"/>
-    <id>https://sachil.xyz/posts/539438d6/</id>
+    <link href="https://www.sachil.xyz/posts/539438d6/"/>
+    <id>https://www.sachil.xyz/posts/539438d6/</id>
     <published>2020-05-21T07:38:25.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -278,19 +278,19 @@ class=&quot;math inline&quot;&gt;\(O(logn)\)&lt;/span&gt;&lt;/strong&gt;。&lt;/
     
     
     
-    <category term="算法" scheme="https://sachil.xyz/categories/algorithm/"/>
+    <category term="算法" scheme="https://www.sachil.xyz/categories/algorithm/"/>
     
     
-    <category term="算法" scheme="https://sachil.xyz/tags/algorithm/"/>
+    <category term="算法" scheme="https://www.sachil.xyz/tags/algorithm/"/>
     
-    <category term="Python" scheme="https://sachil.xyz/tags/Python/"/>
+    <category term="Python" scheme="https://www.sachil.xyz/tags/Python/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin中的委托</title>
-    <link href="https://sachil.xyz/posts/2e419a6e/"/>
-    <id>https://sachil.xyz/posts/2e419a6e/</id>
+    <link href="https://www.sachil.xyz/posts/2e419a6e/"/>
+    <id>https://www.sachil.xyz/posts/2e419a6e/</id>
     <published>2020-03-22T02:20:35.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -307,21 +307,21 @@ class=&quot;math inline&quot;&gt;\(O(logn)\)&lt;/span&gt;&lt;/strong&gt;。&lt;/
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
-    <category term="委托" scheme="https://sachil.xyz/tags/Delegate/"/>
+    <category term="委托" scheme="https://www.sachil.xyz/tags/Delegate/"/>
     
-    <category term="属性委托" scheme="https://sachil.xyz/tags/Properties-Delegate/"/>
+    <category term="属性委托" scheme="https://www.sachil.xyz/tags/Properties-Delegate/"/>
     
   </entry>
   
   <entry>
     <title>Kotlin基础知识</title>
-    <link href="https://sachil.xyz/posts/5498e339/"/>
-    <id>https://sachil.xyz/posts/5498e339/</id>
+    <link href="https://www.sachil.xyz/posts/5498e339/"/>
+    <id>https://www.sachil.xyz/posts/5498e339/</id>
     <published>2019-11-05T13:20:56.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -334,17 +334,17 @@ class=&quot;math inline&quot;&gt;\(O(logn)\)&lt;/span&gt;&lt;/strong&gt;。&lt;/
     
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/categories/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/categories/Kotlin/"/>
     
     
-    <category term="Kotlin" scheme="https://sachil.xyz/tags/Kotlin/"/>
+    <category term="Kotlin" scheme="https://www.sachil.xyz/tags/Kotlin/"/>
     
   </entry>
   
   <entry>
     <title>Jetpack之ViewModel</title>
-    <link href="https://sachil.xyz/posts/633e61d5/"/>
-    <id>https://sachil.xyz/posts/633e61d5/</id>
+    <link href="https://www.sachil.xyz/posts/633e61d5/"/>
+    <id>https://www.sachil.xyz/posts/633e61d5/</id>
     <published>2019-04-27T11:23:50.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -360,19 +360,19 @@ href=&quot;https://sachil.xyz/posts/7f4751ab/&quot;&gt;Jetpack之LiveData&lt;/a&
     
     
     
-    <category term="Jetpack" scheme="https://sachil.xyz/categories/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/categories/Jetpack/"/>
     
     
-    <category term="Android" scheme="https://sachil.xyz/tags/Android/"/>
+    <category term="Android" scheme="https://www.sachil.xyz/tags/Android/"/>
     
-    <category term="Jetpack" scheme="https://sachil.xyz/tags/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/tags/Jetpack/"/>
     
   </entry>
   
   <entry>
     <title>Jetpack之LiveData</title>
-    <link href="https://sachil.xyz/posts/7f4751ab/"/>
-    <id>https://sachil.xyz/posts/7f4751ab/</id>
+    <link href="https://www.sachil.xyz/posts/7f4751ab/"/>
+    <id>https://www.sachil.xyz/posts/7f4751ab/</id>
     <published>2019-04-17T11:40:35.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -390,19 +390,19 @@ href=&quot;https://sachil.xyz/posts/550ac800/&quot;&gt;Jetpack之Lifecycle&lt;/a
     
     
     
-    <category term="Jetpack" scheme="https://sachil.xyz/categories/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/categories/Jetpack/"/>
     
     
-    <category term="Android" scheme="https://sachil.xyz/tags/Android/"/>
+    <category term="Android" scheme="https://www.sachil.xyz/tags/Android/"/>
     
-    <category term="Jetpack" scheme="https://sachil.xyz/tags/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/tags/Jetpack/"/>
     
   </entry>
   
   <entry>
     <title>Jetpack之Lifecycle</title>
-    <link href="https://sachil.xyz/posts/550ac800/"/>
-    <id>https://sachil.xyz/posts/550ac800/</id>
+    <link href="https://www.sachil.xyz/posts/550ac800/"/>
+    <id>https://www.sachil.xyz/posts/550ac800/</id>
     <published>2019-04-07T06:28:41.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -421,19 +421,19 @@ src=&quot;https://gitee.com/sachil/blog-pictures/raw/master/image/Jetpack_buildi
     
     
     
-    <category term="Jetpack" scheme="https://sachil.xyz/categories/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/categories/Jetpack/"/>
     
     
-    <category term="Android" scheme="https://sachil.xyz/tags/Android/"/>
+    <category term="Android" scheme="https://www.sachil.xyz/tags/Android/"/>
     
-    <category term="Jetpack" scheme="https://sachil.xyz/tags/Jetpack/"/>
+    <category term="Jetpack" scheme="https://www.sachil.xyz/tags/Jetpack/"/>
     
   </entry>
   
   <entry>
     <title>Android实战-增量更新</title>
-    <link href="https://sachil.xyz/posts/4225ce89/"/>
-    <id>https://sachil.xyz/posts/4225ce89/</id>
+    <link href="https://www.sachil.xyz/posts/4225ce89/"/>
+    <id>https://www.sachil.xyz/posts/4225ce89/</id>
     <published>2019-03-19T01:30:16.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -445,19 +445,19 @@ src=&quot;https://gitee.com/sachil/blog-pictures/raw/master/image/Jetpack_buildi
     
     
     
-    <category term="Android实战" scheme="https://sachil.xyz/categories/Android-Practice/"/>
+    <category term="Android实战" scheme="https://www.sachil.xyz/categories/Android-Practice/"/>
     
     
-    <category term="Android实战" scheme="https://sachil.xyz/tags/Android-Practice/"/>
+    <category term="Android实战" scheme="https://www.sachil.xyz/tags/Android-Practice/"/>
     
-    <category term="增量更新" scheme="https://sachil.xyz/tags/Incremental-Update/"/>
+    <category term="增量更新" scheme="https://www.sachil.xyz/tags/Incremental-Update/"/>
     
   </entry>
   
   <entry>
     <title>Android基础-Handler消息机制</title>
-    <link href="https://sachil.xyz/posts/424bac86/"/>
-    <id>https://sachil.xyz/posts/424bac86/</id>
+    <link href="https://www.sachil.xyz/posts/424bac86/"/>
+    <id>https://www.sachil.xyz/posts/424bac86/</id>
     <published>2018-09-14T09:15:45.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -475,19 +475,19 @@ src=&quot;https://gitee.com/sachil/blog-pictures/raw/master/image/Jetpack_buildi
     
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/categories/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/categories/Android-Basis/"/>
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/tags/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/tags/Android-Basis/"/>
     
-    <category term="Handler" scheme="https://sachil.xyz/tags/Handler/"/>
+    <category term="Handler" scheme="https://www.sachil.xyz/tags/Handler/"/>
     
   </entry>
   
   <entry>
     <title>Android基础-四大组件</title>
-    <link href="https://sachil.xyz/posts/6ee7637c/"/>
-    <id>https://sachil.xyz/posts/6ee7637c/</id>
+    <link href="https://www.sachil.xyz/posts/6ee7637c/"/>
+    <id>https://www.sachil.xyz/posts/6ee7637c/</id>
     <published>2018-09-01T11:05:09.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -506,25 +506,25 @@ src=&quot;https://gitee.com/sachil/blog-pictures/raw/master/image/Jetpack_buildi
     
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/categories/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/categories/Android-Basis/"/>
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/tags/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/tags/Android-Basis/"/>
     
-    <category term="Activity" scheme="https://sachil.xyz/tags/Activity/"/>
+    <category term="Activity" scheme="https://www.sachil.xyz/tags/Activity/"/>
     
-    <category term="Service" scheme="https://sachil.xyz/tags/Service/"/>
+    <category term="Service" scheme="https://www.sachil.xyz/tags/Service/"/>
     
-    <category term="Broadcast" scheme="https://sachil.xyz/tags/Broadcast/"/>
+    <category term="Broadcast" scheme="https://www.sachil.xyz/tags/Broadcast/"/>
     
-    <category term="Content Provider" scheme="https://sachil.xyz/tags/Content-Provider/"/>
+    <category term="Content Provider" scheme="https://www.sachil.xyz/tags/Content-Provider/"/>
     
   </entry>
   
   <entry>
     <title>Android基础-Intent和Intent Filter的匹配规则</title>
-    <link href="https://sachil.xyz/posts/f366cc9a/"/>
-    <id>https://sachil.xyz/posts/f366cc9a/</id>
+    <link href="https://www.sachil.xyz/posts/f366cc9a/"/>
+    <id>https://www.sachil.xyz/posts/f366cc9a/</id>
     <published>2018-08-31T12:34:23.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -548,19 +548,19 @@ filter中任意一个中不包含action，都无法通过测试。&lt;/p&gt;</su
     
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/categories/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/categories/Android-Basis/"/>
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/tags/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/tags/Android-Basis/"/>
     
-    <category term="Intent" scheme="https://sachil.xyz/tags/Intent/"/>
+    <category term="Intent" scheme="https://www.sachil.xyz/tags/Intent/"/>
     
   </entry>
   
   <entry>
     <title>Android基础-Activity的四种启动模式</title>
-    <link href="https://sachil.xyz/posts/a3b77b7e/"/>
-    <id>https://sachil.xyz/posts/a3b77b7e/</id>
+    <link href="https://www.sachil.xyz/posts/a3b77b7e/"/>
+    <id>https://www.sachil.xyz/posts/a3b77b7e/</id>
     <published>2018-08-20T05:10:40.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -573,19 +573,19 @@ id=&quot;android基础-activity的四种启动模式&quot;&gt;Android基础-Acti
     
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/categories/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/categories/Android-Basis/"/>
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/tags/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/tags/Android-Basis/"/>
     
-    <category term="启动模式" scheme="https://sachil.xyz/tags/Launch-Mode/"/>
+    <category term="启动模式" scheme="https://www.sachil.xyz/tags/Launch-Mode/"/>
     
   </entry>
   
   <entry>
     <title>Android中的LruCache缓存</title>
-    <link href="https://sachil.xyz/posts/a2b68561/"/>
-    <id>https://sachil.xyz/posts/a2b68561/</id>
+    <link href="https://www.sachil.xyz/posts/a2b68561/"/>
+    <id>https://www.sachil.xyz/posts/a2b68561/</id>
     <published>2018-07-23T03:26:54.000Z</published>
     <updated>2023-06-20T15:46:03.207Z</updated>
     
@@ -603,14 +603,14 @@ Level
     
     
     
-    <category term="Android基础" scheme="https://sachil.xyz/categories/Android-Basis/"/>
+    <category term="Android基础" scheme="https://www.sachil.xyz/categories/Android-Basis/"/>
     
     
-    <category term="Android" scheme="https://sachil.xyz/tags/Android/"/>
+    <category term="Android" scheme="https://www.sachil.xyz/tags/Android/"/>
     
-    <category term="Lrucache" scheme="https://sachil.xyz/tags/Lrucache/"/>
+    <category term="Lrucache" scheme="https://www.sachil.xyz/tags/Lrucache/"/>
     
-    <category term="LinkedMap" scheme="https://sachil.xyz/tags/LinkedMap/"/>
+    <category term="LinkedMap" scheme="https://www.sachil.xyz/tags/LinkedMap/"/>
     
   </entry>
   

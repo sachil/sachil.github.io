@@ -21,12 +21,12 @@
 
 <script class="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+    var CONFIG = {"hostname":"www.sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
   </script>
 <meta name="description" content="Android中的LruCache缓存 缓存机制是我们日常开发中常用的一种减少用户等待时间的手段，特别是在显示图片的时候，图片缓存会被频繁地使用，因为如果每次加载图片都是从网络上获取，由于网络的不稳定性，用户等待的时间就会很不确定，这样会影响用户体验，如果我们将图片缓存起来，加载的时候直接从缓存中获取，这样就可以减少用户的等待时间，从而提升用户体验。 目前主要的缓存策略是：当需要加载一张图片的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android中的LruCache缓存">
-<meta property="og:url" content="https://sachil.xyz/posts/a2b68561/index.html">
+<meta property="og:url" content="https://www.sachil.xyz/posts/a2b68561/index.html">
 <meta property="og:site_name" content="Sachil&#39;s Blog">
 <meta property="og:description" content="Android中的LruCache缓存 缓存机制是我们日常开发中常用的一种减少用户等待时间的手段，特别是在显示图片的时候，图片缓存会被频繁地使用，因为如果每次加载图片都是从网络上获取，由于网络的不稳定性，用户等待的时间就会很不确定，这样会影响用户体验，如果我们将图片缓存起来，加载的时候直接从缓存中获取，这样就可以减少用户的等待时间，从而提升用户体验。 目前主要的缓存策略是：当需要加载一张图片的">
 <meta property="og:locale" content="zh_CN">
@@ -39,7 +39,7 @@
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://sachil.xyz/posts/a2b68561/">
+<link rel="canonical" href="https://www.sachil.xyz/posts/a2b68561/">
 
 
 <script class="page-configurations">
@@ -267,7 +267,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/a2b68561/">
+    <link itemprop="mainEntityOfPage" href="https://www.sachil.xyz/posts/a2b68561/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -338,7 +338,7 @@ Level
 <p>所以如果我们想要更深入的了解<code>LruCache</code>的基本原理，我们就必须先了解<code>LinkedHashMap</code>的基本原理，这样我们再回到<code>LruCache</code>的时候，一切难题就将会迎刃而解。</p>
 <h3 id="linkedhashmap的基本原理">LinkedHashMap的基本原理</h3>
 <p>我们都知道<code>HashMap</code>是无序的，如果我们需要有序的存储键值对(key-value)，我们就需要用到<code>LinkedHashMap</code>，<code>LinkedHashMap</code>是<code>HashMap</code>的子类，如果不明白<code>HashMap</code>基本原理的，可以参考这篇文章：<a
-href="https://sachil.xyz/posts/df0ab85e/">Java中的HashMap</a>。我们先来看一下<code>LinkedHashMap</code>的基本使用：</p>
+target="_blank" rel="noopener" href="https://sachil.xyz/posts/df0ab85e/">Java中的HashMap</a>。我们先来看一下<code>LinkedHashMap</code>的基本使用：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Map&lt;String, Integer&gt; map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">    map.put(<span class="string">&quot;one&quot;</span>, <span class="number">1</span>);</span><br><span class="line">    map.put(<span class="string">&quot;two&quot;</span>, <span class="number">2</span>);</span><br><span class="line">    map.put(<span class="string">&quot;three&quot;</span>, <span class="number">3</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//输出：key:one,value:1</span></span><br><span class="line">	<span class="comment">//key:two,value:2</span></span><br><span class="line">	<span class="comment">//key:three,value:3</span></span><br><span class="line">    <span class="keyword">for</span> (Map.Entry&lt;String, Integer&gt; entry : map.entrySet()) &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;key:&quot;</span> + entry.getKey() + <span class="string">&quot;,value:&quot;</span> + entry.getValue());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>从输出结果可以看到，输出顺序是和插入顺序是一致的，所以<code>LinkedHashMap</code>是有序的，而且默认就是插入顺序。</p>
 <h4 id="构造函数">构造函数</h4>
