@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Kotlin中的Lambda表达式 在Kotlin中是支持Lambda表达式的，使用起来也比较简单和方便，但是很多时候我们还是对它有很多疑惑，比如我们在调用它的时候觉得很顺手，但是让我们自己去定义的时候却不是那么容易上手，还有就是Lambda表达式到底是什么，以及Kotlin中的Lambda表达式和Java8中的Lambda有什么本质上的区别？这些我们需要通过学习来一一解答。 高阶函数 Ja">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin中的Lambda表达式">
+<meta property="og:url" content="https://sachil.xyz/posts/c6661a47/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Kotlin中的Lambda表达式 在Kotlin中是支持Lambda表达式的，使用起来也比较简单和方便，但是很多时候我们还是对它有很多疑惑，比如我们在调用它的时候觉得很顺手，但是让我们自己去定义的时候却不是那么容易上手，还有就是Lambda表达式到底是什么，以及Kotlin中的Lambda表达式和Java8中的Lambda有什么本质上的区别？这些我们需要通过学习来一一解答。 高阶函数 Ja">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-23T06:38:39.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="Kotlin">
+<meta property="article:tag" content="Lambda表达式">
+<meta property="article:tag" content="高阶函数">
+<meta property="article:tag" content="匿名函数">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/c6661a47/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Kotlin中的Lambda表达式 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kotlin%E4%B8%AD%E7%9A%84lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Kotlin中的Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E9%98%B6%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">高阶函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java%E4%B8%AD%E7%9A%84%E9%99%90%E5%88%B6"><span class="nav-number">1.1.1.</span> <span class="nav-text">Java中的限制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#kotlin%E4%B8%AD%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-number">1.1.2.</span> <span class="nav-text">Kotlin中的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="nav-number">1.1.3.</span> <span class="nav-text">双冒号::的作用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0"><span class="nav-number">1.2.</span> <span class="nav-text">匿名函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">Lambda表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8C%BF%E5%90%8D%E5%87%BD%E6%95%B0%E4%B8%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-number">1.4.</span> <span class="nav-text">匿名函数与Lambda表达式的本质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8Ejava%E4%B8%ADlambda%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="nav-number">1.5.</span> <span class="nav-text">与Java中Lambda的差异</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/c6661a47/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kotlin中的Lambda表达式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-23 14:38:39" itemprop="dateCreated datePublished" datetime="2020-05-23T14:38:39+08:00">2020-05-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Kotlin/" itemprop="url" rel="index"><span itemprop="name">Kotlin</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="kotlin中的lambda表达式">Kotlin中的Lambda表达式</h1>
+<p>在<code>Kotlin</code>中是支持<code>Lambda表达式</code>的，使用起来也比较简单和方便，但是很多时候我们还是对它有很多疑惑，比如我们在调用它的时候觉得很顺手，但是让我们自己去定义的时候却不是那么容易上手，还有就是<code>Lambda表达式</code>到底是什么，以及<code>Kotlin</code>中的<code>Lambda表达式</code>和<code>Java8</code>中的<code>Lambda</code>有什么本质上的区别？这些我们需要通过学习来一一解答。</p>
+<h2 id="高阶函数">高阶函数</h2>
+<h3 id="java中的限制">Java中的限制</h3>
+<p>在了解<code>Lambda表达式</code>之前，我们需要先理解另一个重要的概念：<strong>高阶函数</strong>。什么是高阶函数？它的定义就是：将函数作为参数或者返回值的函数。感觉不太明白是吧，没关系，听我娓娓道来，首先我们先看一个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionX</span><span class="params">(<span class="keyword">int</span> params)</span> </span>&#123;</span><br><span class="line">    functionY(params);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">functionY</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Value is:&quot;</span> + value);</span><br><span class="line">&#125;</span><br><span class="line">functionX(<span class="number">100</span>);</span><br></pre></td></tr></table></figure>
+<span id="more"></span>
+<p>在<code>Java</code>代码中，你有一个<code>functionX</code>方法需要调用另一个<code>functionY</code>方法，并且动态的设置<code>functionY</code>方法的参数，你就需要先把参数传递给<code>functionX</code>，然后再在该方法的内部将参数传递给<code>functionY</code>,就像上面的代码一样。但是如果我们想动态设置的不是函数参数，而是方法本身呢？比如在<code>functionX</code>中动态的设置调用哪个方法，或者说我们可以将方法作为参数传递到另一个方法中吗？很遗憾，<code>Java</code>中并不支持将方法作为参数来传递。但是<code>Java</code>中有一个折中的方案，那就是接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Say</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">sayHello</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Dog</span> <span class="keyword">implements</span> <span class="title">Say</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Wang..Wang&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Cat</span> <span class="keyword">implements</span> <span class="title">Say</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sayHello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Miao...&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">function</span><span class="params">(Say who)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> who.sayHello();</span><br><span class="line">&#125;</span><br><span class="line">function(<span class="keyword">new</span> Dog());</span><br><span class="line">function(<span class="keyword">new</span> Cat());</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，<code>function</code>方法接受一个<code>Say</code>接口类型的参数，其实这里<code>Say</code>只是一个壳，其本质是传递进来一个可以调用的<code>sayHello</code>方法，而这个方法可以有不同的实现(就像Dog类和Cat类那样)，只不过<code>Java</code>中不允许传递方法，而我们将它包裹在一个对象中进行传递，这样就达到了我们的目的。</p>
+<h3 id="kotlin中的使用">Kotlin中的使用</h3>
+<p>在<code>Kotlin</code>中，不用这么麻烦，可以直接将函数作为参数进行传递，或者作为返回值返回，这就是高阶函数，<code>Kotlin</code>是直接支持的：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HighOrderFunction</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">functionA</span><span class="params">(value: <span class="type">Int</span>)</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Value:<span class="variable">$value</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">functionB</span><span class="params">(value: <span class="type">Int</span>)</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Value*10:<span class="subst">$&#123;value * <span class="number">10</span>&#125;</span>&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//高阶函数</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">functionC</span><span class="params">(value: <span class="type">Int</span>, method: (<span class="type">Int</span>) -&gt; <span class="type">String</span>)</span></span>: String &#123;</span><br><span class="line">        <span class="keyword">return</span> method(value)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//高阶函数</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">functionD</span><span class="params">(mode: <span class="type">Int</span>)</span></span>: (<span class="built_in">Int</span>) -&gt; String &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">if</span> (mode % <span class="number">2</span> == <span class="number">0</span>) ::functionA <span class="keyword">else</span> ::functionB</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> test = HighOrderFunction()</span><br><span class="line">    <span class="comment">//这里新建了一个函数传递给functionC，也就是匿名函数</span></span><br><span class="line">    test.functionC(<span class="number">1</span>,<span class="function"><span class="title">fun</span><span class="params">(value:<span class="type">Int</span>)</span></span>:String&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Input value is <span class="variable">$value</span>&quot;</span></span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">//这里将functionA作为参数传递给functionC</span></span><br><span class="line">    println(test.functionC(<span class="number">1</span>, test::functionA))</span><br><span class="line">    <span class="comment">//这里将functionB作为参数传递给functionC</span></span><br><span class="line">    println(test.functionC(<span class="number">1</span>, test::functionB))</span><br><span class="line">    <span class="comment">//这里functionD返回的是functionB</span></span><br><span class="line">    println(test.functionD(<span class="number">1</span>)(<span class="number">2</span>))</span><br><span class="line">    <span class="comment">//这里functionD返回的是functionA</span></span><br><span class="line">    println(test.functionD(<span class="number">2</span>)(<span class="number">2</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在上面的代码中，<code>functionC</code>和<code>functionD</code>都是高阶函数，<code>functionC</code>的<code>method</code>参数是一个函数类型的参数，其具体类型是一个接受一个Int参数并返回一个String的函数，<code>functionA</code>和<code>functionB</code>就是这样类型的函数，所以我们可以将<code>functionA</code>和<code>functionB</code>作为<code>functionC</code>的参数。而<code>functionD</code>返回的是一个类型为接受一个Int参数并返回一个String的函数，所以我们也可以将<code>functionA</code>和<code>functionB</code>作为<code>functionD</code>的返回值。</p>
+<h3 id="双冒号的作用">双冒号::的作用</h3>
+<p>对于一个声明好的函数，在作为参数进行传递时或者要把它赋值给一个变量时，都得在函数名左边加上双冒号(::)。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionA</span><span class="params">()</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;In functionA&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionB</span><span class="params">(method: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    method()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//直接调用functionA</span></span><br><span class="line">    functionA()</span><br><span class="line">     <span class="comment">//这里其实调用的是function的invoke()方法</span></span><br><span class="line">    (::functionA)()</span><br><span class="line">    <span class="comment">//将函数赋值给变量function</span></span><br><span class="line">    <span class="keyword">val</span> function = ::functionA</span><br><span class="line">    <span class="comment">//这里其实调用的是function的invoke()方法</span></span><br><span class="line">    function()</span><br><span class="line">    <span class="comment">//作为参数传递</span></span><br><span class="line">    functionB(::functionA)</span><br><span class="line">    <span class="comment">//将变量function传递给functionB，与上面等价</span></span><br><span class="line">    functionB(function)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>为什么需要加双冒号呢？因为只有加上了双冒号，函数才能转变为一个对象。</strong>在<code>Kotlin</code>中，函数可以作为参数或者返回值的本质就是，函数可以作为对象存在，只有对象才能作为参数或者返回值，将函数赋值给变量也是同样的道理。但是函数的性质决定了它不是一个对象，所以在<code>Kotlin</code>中加上双冒号，就创建了一个和函数功能相同的对象。</p>
+<h2 id="匿名函数">匿名函数</h2>
+<p>将函数作为参数进行传递，或者将函数对象赋值给变量，除了使用双冒号+已声明的函数来使用之外，还可以直接把函数实现拿来使用：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionA</span><span class="params">()</span></span> &#123;</span><br><span class="line">    println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionB</span><span class="params">(method: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    method()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//直接挪用了functionA的函数体，functionB的参数是一个匿名函数</span></span><br><span class="line">    functionB(<span class="function"><span class="title">fun</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;Hello World&quot;</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">//新建了一个函数，并赋值给变量method，等号的右边是一个匿名函数</span></span><br><span class="line">    <span class="keyword">val</span> method = <span class="function"><span class="title">fun</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;Hello Kotlin&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    functionB(method)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种写法就叫<code>匿名函数</code>，其实很好理解，因为函数有函数实现，但是没有函数名。</p>
+<h2 id="lambda表达式">Lambda表达式</h2>
+<p><code>Lambda表达式</code>和<code>匿名函数</code>一样，没有先声明函数，而是作为表达式立即被使用。<code>Lambda 表达式</code>总是括在花括号中，
+完整语法形式的参数声明放在花括号内，并有可选的类型标注， 函数体跟在一个
+<code>-&gt;</code> 符号之后。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionA</span><span class="params">(method: (<span class="type">Int</span>) -&gt; <span class="type">Unit</span>, value: <span class="type">Int</span>)</span></span> &#123;</span><br><span class="line">    method(value)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionB</span><span class="params">(value: <span class="type">Int</span>, method: (<span class="type">Int</span>) -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    method(value)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">functionV</span><span class="params">(method: () -&gt; <span class="type">Unit</span>)</span></span> &#123;</span><br><span class="line">    method()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//使用Lambda表达式，并自定义了参数名为value</span></span><br><span class="line">    functionA(&#123; value: <span class="built_in">Int</span> -&gt; println(<span class="string">&quot;Hey,<span class="variable">$value</span>&quot;</span>) &#125;, <span class="number">1</span>)</span><br><span class="line">    <span class="comment">//使用匿名函数的方式</span></span><br><span class="line">    functionB(<span class="number">1</span>, <span class="function"><span class="title">fun</span><span class="params">(value: <span class="type">Int</span>)</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;<span class="variable">$value</span>&quot;</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">//使用Lambda表达式，函数类型的参数在最后，所以可以将花括号写在括号之外</span></span><br><span class="line">    functionB(<span class="number">100</span>) &#123;</span><br><span class="line">        println(<span class="string">&quot;The value is:<span class="variable">$it</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//参数只有一个，并且为函数类型，所以括号都可以省略</span></span><br><span class="line">    functionV &#123;</span><br><span class="line">        println(<span class="string">&quot;Hello world.&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//将Lambda表达式赋值给method</span></span><br><span class="line">    <span class="keyword">val</span> method = &#123; value: <span class="built_in">Int</span> -&gt;</span><br><span class="line">        println(<span class="string">&quot;Method value:<span class="variable">$value</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    functionB(<span class="number">1</span>, method)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实感觉<code>Lambda表达式</code>就是<code>匿名函数</code>的简便写法。<code>Lambda表达式</code>这样的简便写法可以省略很多东西，但是它又是这样知道自己的参数类型和返回值类型的呢(例如上面代码第21行,<code>functionB</code>的调用)，其实它是从上下文中推导出来的，因为我们在声明<code>functionB</code>的时候(代码第5行)已经定义了参数<code>method</code>的类型。如果无法从上下文中推导出来，我们就需要显示指定，例如在将<code>lambda表达式</code>赋值给变量时(代码第29行)。</p>
+<h2 id="匿名函数与lambda表达式的本质">匿名函数与Lambda表达式的本质</h2>
+<p><code>匿名函数</code>可以作为参数传递或者赋值给变量，而我们知道函数是不能直接作为参数传递或者赋值给变量的，匿名函数为什么这么特殊？其实在<code>Kotlin</code>中<code>匿名函数</code>不是函数，而是对象，虽然它的名字中有函数两个字，但其实它是一个对象。同样，<code>Lambda表达式</code>也是对象，所以它们才能被直接用于参数传递或者变量赋值。</p>
+<h2 id="与java中lambda的差异">与Java中Lambda的差异</h2>
+<p><code>Java</code>从<code>Java8</code>开始支持<code>Lambda表达式</code>，对于单抽象方法的接口(SAM:Single
+Abstract
+Method)，<code>Java8</code>允许你使用<code>Lambda表达式</code>来创建匿名类对象，是一种简化写法而已，本质上还是在创建匿名类对象，而<code>Kotlin</code>中<code>Lambda表达式</code>的本质是函数对象，功能更强大，写法也更灵活。</p>
+<p>还有就是在<code>Kotlin</code>中不允许用<code>Lambda表达式</code>来简写匿名类对象，因为已经有高阶函数，所以不再需要这样的折中方案，但是在与<code>Java</code>的交互中却是可以的，当你的函数参数是一个<code>Java</code>的单抽象方法接口对象时，是可以使用<code>Lambda表达式的</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Java代码，接口中只有一个方法</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">B</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">method</span><span class="params">(<span class="keyword">int</span> value)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Kotlin代码</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">method</span><span class="params">(value: <span class="type">Int</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">testA</span><span class="params">(a: <span class="type">A</span>)</span></span> &#123;</span><br><span class="line">    a.method(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">testB</span><span class="params">(b: <span class="type">B</span>)</span></span> &#123;</span><br><span class="line">    b.method(<span class="number">2</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"><span class="comment">//Kotlin中不允许使用Lambda表达式来简写匿名类对象</span></span><br><span class="line"><span class="comment">//    testA &#123; value: Int -&gt;</span></span><br><span class="line"><span class="comment">//        println(&quot;$value&quot;)</span></span><br><span class="line"><span class="comment">//    &#125;</span></span><br><span class="line">    <span class="comment">//只能像这样调用</span></span><br><span class="line">    testA(<span class="keyword">object</span> : A &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">method</span><span class="params">(value: <span class="type">Int</span>)</span></span> &#123;</span><br><span class="line">            println(<span class="string">&quot;<span class="variable">$value</span>&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="comment">//在与Java交互的时候，可以这样写</span></span><br><span class="line">    testB &#123; value: <span class="built_in">Int</span> -&gt;</span><br><span class="line">        println(<span class="string">&quot;<span class="variable">$value</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>但是在<code>Kotlin</code>中对于单抽象方法的接口，可以使用关键字<code>fun</code>来修饰，这样就可以使用<code>Lambda表达式</code>来使代码更简洁和更有可读性。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//用fun修饰单抽象方法的接口</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="keyword">interface</span> A &#123;</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">method</span><span class="params">(value: <span class="type">Int</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">//普通的调用方式，比较繁琐</span></span><br><span class="line">    <span class="keyword">val</span> normal = <span class="keyword">object</span> : A &#123;</span><br><span class="line">        <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">method</span><span class="params">(value: <span class="type">Int</span>)</span></span> &#123;</span><br><span class="line">            println(<span class="string">&quot;The value is <span class="variable">$it</span>&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    normal.method(<span class="number">100</span>)</span><br><span class="line">    <span class="comment">//使用Lambda表达式来简化调用</span></span><br><span class="line">    <span class="keyword">val</span> lambda = A &#123;</span><br><span class="line">        println(<span class="string">&quot;The value is <span class="variable">$it</span>&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    lambda.method(<span class="number">100</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://kaixue.io/kotlin-lambda/">Kotlin 的 Lambda
+表达式，大多数人学得连皮毛都不算</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+              <a href="/tags/Lambda/" rel="tag"># Lambda表达式</a>
+              <a href="/tags/High-Order-Function/" rel="tag"># 高阶函数</a>
+              <a href="/tags/Anonymous-Function/" rel="tag"># 匿名函数</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/539438d6/" rel="prev" title="算法图解心得">
+                  <i class="fa fa-chevron-left"></i> 算法图解心得
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/4df1dcac/" rel="next" title="Kotlin中的扩展函数与扩展属性">
+                  Kotlin中的扩展函数与扩展属性 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '00e6bcc33929c076336603b1adb6a2f4',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

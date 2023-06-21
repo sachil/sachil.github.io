@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Android基础-四大组件 Activity Activity用于向用户展示内容并且接受用户操作的界面，实际上等同于app与用户之间进行交互的接口。 Activity的生命周期  onCreate() 在这个方法中进行初始化操作，比如加载布局，绑定事件，初始化数据等。 onRestart() 在Activity由停止状态转变为运行状态前调用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android基础-四大组件">
+<meta property="og:url" content="https://sachil.xyz/posts/6ee7637c/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Android基础-四大组件 Activity Activity用于向用户展示内容并且接受用户操作的界面，实际上等同于app与用户之间进行交互的接口。 Activity的生命周期  onCreate() 在这个方法中进行初始化操作，比如加载布局，绑定事件，初始化数据等。 onRestart() 在Activity由停止状态转变为运行状态前调用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-09-01T11:05:09.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="Android基础">
+<meta property="article:tag" content="Activity">
+<meta property="article:tag" content="Service">
+<meta property="article:tag" content="Broadcast">
+<meta property="article:tag" content="Content Provider">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/6ee7637c/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Android基础-四大组件 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android%E5%9F%BA%E7%A1%80-%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6"><span class="nav-number">1.</span> <span class="nav-text">Android基础-四大组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#activity"><span class="nav-number">1.1.</span> <span class="nav-text">Activity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#activity%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.1.1.</span> <span class="nav-text">Activity的生命周期</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service"><span class="nav-number">1.2.</span> <span class="nav-text">Service</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8Cservice%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">运行Service的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#service%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.2.2.</span> <span class="nav-text">Service的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intentservice"><span class="nav-number">1.2.3.</span> <span class="nav-text">IntentService</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#foregroundservice"><span class="nav-number">1.2.4.</span> <span class="nav-text">ForegroundService</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#broadcast"><span class="nav-number">1.3.</span> <span class="nav-text">Broadcast</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#broadcast%E7%9A%84%E6%B3%A8%E5%86%8C"><span class="nav-number">1.3.1.</span> <span class="nav-text">Broadcast的注册</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#broadcast%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.3.2.</span> <span class="nav-text">Broadcast的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#broadcast-receiver%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.3.</span> <span class="nav-text">Broadcast Receiver的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#onreceive%E6%96%B9%E6%B3%95%E7%9A%84%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">1.3.4.</span> <span class="nav-text">onReceive()方法的上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8Candroid%E7%89%88%E6%9C%AC%E5%B9%BF%E6%92%AD%E6%9C%BA%E5%88%B6%E7%9A%84%E9%87%8D%E8%A6%81%E5%8F%98%E8%BF%81"><span class="nav-number">1.3.5.</span> <span class="nav-text">不同Android版本广播机制的重要变迁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#content-provider"><span class="nav-number">1.4.</span> <span class="nav-text">Content Provider</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/6ee7637c/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android基础-四大组件
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-09-01 19:05:09" itemprop="dateCreated datePublished" datetime="2018-09-01T19:05:09+08:00">2018-09-01</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android-Basis/" itemprop="url" rel="index"><span itemprop="name">Android基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="android基础-四大组件">Android基础-四大组件</h1>
+<h2 id="activity">Activity</h2>
+<p>Activity用于向用户展示内容并且接受用户操作的界面，实际上等同于app与用户之间进行交互的接口。</p>
+<h3 id="activity的生命周期">Activity的生命周期</h3>
+<ul>
+<li><p>onCreate()</p>
+<p>在这个方法中进行初始化操作，比如加载布局，绑定事件，初始化数据等。</p></li>
+<li><p>onRestart()</p>
+<p>在Activity由停止状态转变为运行状态前调用。</p>
+<span id="more"></span></li>
+<li><p>onStart()</p>
+<p>当Activity又不可见变为可见时调用，虽然此时Activity未出现在前台，不能与用户进行交互，但是它已经是可见的了。</p></li>
+<li><p>onResume()</p>
+<p>Activity出现在前台，并且可以和用户进行交互。<strong>此时Activity一定处于任务栈的栈顶，并且处于运行状态。</strong></p></li>
+<li><p>onPause()</p>
+<p>在系统准备启动或者恢复另一个Activity时调用。<strong>我们通常在这个方法中将一些极其消耗CPU的资源释放掉，并且保存一些关键数据，但是速度一定要快，否则会影响新的栈顶Activity的使用。</strong></p></li>
+<li><p>onStop()</p>
+<p>在Activity<strong>完全不可见时</strong>调用。<strong>与onPause()不同的是，如果启动的是一个对话框式的Activity或者背景透明的Activity，onPause()会被调用，而onStop()不会被调用。</strong></p></li>
+<li><p>onDestory()</p>
+<p>在Activity销毁前调用，该方法执行后，Activity即被销毁。</p></li>
+</ul>
+<p>这几种方法，除了<code>onRestart()</code>，其他都是两两成对的，所以我们可以将Activity划分为3个时期：</p>
+<ul>
+<li><p>完整生存期</p>
+<p>在<code>onCreate()</code>和<code>onDestory（）</code>方法之间所经历的，就是完整生存期。</p></li>
+<li><p>可见生存期</p>
+<p>在<code>onStart（）</code>和<code>onStop()</code>方法之间所经历的，就是可见生存期。</p></li>
+<li><p>前台生存期</p>
+<p>在<code>onResume()</code>和<code>onPause()</code>之间所经历的，就是前台生存期。</p></li>
+</ul>
+<p>当Activity意外终止时，在<code>onStop()</code>方法调用之前，系统会调用<code>ononSaveInstanceState()</code>方法，用于保存Activity的状态，并在<code>onCreate()</code>方法调用后，在<code>onRestoreInstanceState()</code>方法中恢复状态。</p>
+<h2 id="service">Service</h2>
+<p>service是一种可在后台执行长时间运行操作而不提供界面的应用组件,可以执行一些耗时的任务。service在其托管的进程的UI线程运行，默认情况下，它既不创建线程，也不在单独的进程中运行，如果执行一些CPU密集型操作或者阻止性操作，请在service中开启线程来进行这些操作，否则会出现ANR错误。</p>
+<h3 id="运行service的方式">运行Service的方式</h3>
+<p>运行service有以下两种方式：</p>
+<ul>
+<li><p><strong>通过<code>startService()</code>启动</strong>,一旦启动，Service则可以在后台无限期运行，即使启动它的组件已经销毁也不受影响。如果想停止service运行，可以通过<code>stopSelf()</code>方法自行停止运行，或者通过其他组件调用<code>stopService()</code>方法停止运行。并且在不需要Service工作时，记得将其停止，否则service将一直运行。</p>
+<p><code>startService()</code>方法会调用Service的<code>onStartCommand()</code>方法，这个方法的返回值有特殊意义：</p>
+<ul>
+<li><strong><code>START_NOT_STICKY</code></strong>，当 Service
+因内存不足而被系统 kill
+后，即使系统内存再次空闲时，系统也不会尝试重新创建此
+Service。这是最安全的选项。</li>
+<li><strong><code>START_STICKY</code></strong>，当 Service
+因内存不足而被系统 kill
+后，一段时间后内存再次空闲时，系统将会尝试重新创建此
+Service，一旦创建成功后将回调 onStartCommand 方法，但其中的 Intent 将是
+null，除非有挂起的 Intent。比较适合媒体播放器或类似的服务</li>
+<li><strong><code>START_REDELIVER_STICKY</code></strong>，当 Service
+因内存不足而被系统 kill 后，则会重建服务，并通过传递给服务的最后一个
+Intent 调用 onStartCommand()，任何挂起 Intent 均依次传递。与
+START_STICKY 不同的是，其中的传递的 Intent 将是非空，是最后一次调用
+startService() 中的 intent。比较适合文件加载或类似需要恢复的服务。</li>
+</ul></li>
+<li><p><strong>通过<code>bindService()</code>绑定</strong>,在其它组件中通过<code>bindService()</code>方法也可以运行Service，并且通过这种绑定方式，组件可以获取到Service实例，从而可以进行交互。<code>bindService()</code>方法会调用Service的<code>onBind()</code>回调，在回调中可以返回一个IBinder的实例，从而实现绑定。组件可以使用<code>unBindService()</code>方法解除与Service间的绑定，它会调用service的<code>onUnBind()</code>回调，需要注意的是：</p>
+<ul>
+<li><strong>当第一个组件调用<code>bindService()</code>方法时，会调用<code>onBind()</code>回调，然后后面的组件继续绑定Service，如果系统判断到Intent相同，则不再调用<code>onBind()</code>回调。</strong></li>
+<li><strong>当所有组件都与该Service解绑后，Service的<code>onUnBind()</code>回调才会执行，然后Service才会销毁。</strong></li>
+<li><strong><code>unBind()</code>回调可以返回<code>true</code>，然后再次绑定时会回调<code>onRebind()</code>方法（前提是该Service仍然存在）。</strong></li>
+<li><strong>当有组件绑定到Service时，即使调用<code>stopService()</code>方法尝试停止Service也不会成功。</strong></li>
+<li><strong>Service的<code>onCreate()</code>回调只会执行一次。</strong></li>
+</ul></li>
+</ul>
+<h3 id="service的生命周期">Service的生命周期</h3>
+<ul>
+<li>通过<code>startService()</code>方式运行，<strong>启动Service-&gt;<code>onCreate()</code>-&gt;<code>onStartCommand</code>-&gt;Service正在运行-&gt;<code>onDestory()</code>-&gt;Service销毁</strong></li>
+<li>通过<code>bindService</code>方式运行，<strong>绑定Service-&gt;<code>onCreate()</code>-&gt;<code>onBInd()</code>-&gt;Service正在运行-&gt;<code>onUnbind()</code>-&gt;<code>onDestory()</code>-&gt;Service销毁</strong></li>
+</ul>
+<h3 id="intentservice">IntentService</h3>
+<p>IntentService是service的扩展类，它会为Service单独创建一个线程，并且创建一个工作队列，用于将intent逐一地传递给<code>onHandleIntent()</code>方法，所以它是串行的执行任务，不用担心多线程问题，它还会在执行完所有任务后自动地停止Service，不用手动调用停止的方法。需要注意的是：<strong>IntentService执行传递给<code>onStartCommand()</code>的Intent，所以需要调用<code>startService()</code>使其运行。</strong></p>
+<h3 id="foregroundservice">ForegroundService</h3>
+<p>Foreground
+Service(前台服务)是用户主动意识到的一种Service，因此在内存不足时，系统也不会考虑将其终止。<strong>Foreground
+Service必须为状态栏提供显示优先级为<code>PRIORTY_LOW</code>或更高的通知</strong>，以帮助用户知道应用正在执行的任务，除非停止Service或者将Service转为后台，否则无法清楚通知。</p>
+<p><strong>从Android 9开始，使用Foreground
+Service必须请求<code>FOREGROUND_SERVICE</code>权限</strong>，启动Foreground
+Service可以使用<code>startForeground()</code>方法，<strong>该方法的整型ID不能为0</strong>，移除Foreground
+Service可以调用<code>stopForeground()</code>方法，<strong>该方法不会停止Service，而是将其从前台转为后台运行。</strong></p>
+<p>跨进程调用可以使用<strong><code>Messenger</code></strong>和<strong><code>AIDL</code></strong>方式。</p>
+<h2 id="broadcast">Broadcast</h2>
+<p>广播(broadcast)是一个全局的监听器，可以监听整个系统或者整个app，能用于跨进程或者进程内通信，其采用观察者模式，基于消息的订阅/发布模型。这其中有3个角色：1.广播发送者
+，2.消息中心(Activity Manager Service)，3.广播接受者(Broadcast
+Receiver)。</p>
+<h3 id="broadcast的注册">Broadcast的注册</h3>
+<ul>
+<li><p>静态注册，静态注册是指在AndroidManifest.xml中进行注册。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&lt;receiver</span><br><span class="line">          <span class="comment">&lt;!-- Android7.0开始，如果为false，手机重启后未解锁前，广播访问的数据是FBE加密的，将不能启动  --&gt;</span></span><br><span class="line">      android:directBootAware=[&quot;true&quot; | &quot;false&quot;]</span><br><span class="line">      android:enabled=[&quot;true&quot; | &quot;false&quot;]</span><br><span class="line">      android:exported=[&quot;true&quot; | &quot;false&quot;]</span><br><span class="line">      android:icon=&quot;drawable resource&quot;</span><br><span class="line">      android:label=&quot;string resource&quot;</span><br><span class="line">      android:name=&quot;.MBroadcastReceiver&quot;</span><br><span class="line">      android:permission=&quot;string&quot;</span><br><span class="line">      android:process=&quot;string&quot; &gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span> <span class="attr">android:icon</span>=<span class="string">&quot;drawable resource&quot;</span></span></span><br><span class="line"><span class="tag">              <span class="attr">android:label</span>=<span class="string">&quot;string resource&quot;</span></span></span><br><span class="line"><span class="tag">              <span class="attr">android:priority</span>=<span class="string">&quot;integer&quot;</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.net.conn.CONNECTIVITY_CHANGE&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">receiver</span>&gt;</span></span><br></pre></td></tr></table></figure></li>
+<li><p>动态注册，动态注册是指在代码中通过<code>registerReceiver()</code>方法注册广播，如果是动态注册，则需要在组件的相应生命周期内使用<code>unregisterReceiver()</code>取消广播的注册。</p></li>
+</ul>
+<h3 id="broadcast的类型">Broadcast的类型</h3>
+<p>按照不同的划分方法，可以将Broadcast划分为不同的类型。</p>
+<ul>
+<li><p><strong>自定义广播和系统广播</strong></p></li>
+<li><p><strong>普通广播和有序广播</strong></p>
+<p>普通广播以异步的方式发送给接收者，所有满足条件的接收者几乎可以同时收到广播，没有顺序之分，也不用想AMS返回处理结果。各接收者互不干扰，效率较高。</p>
+<p>有序广播是以一种同步的方式向接收者发送广播的。广播接收者会根据开发者设定的优先级进行排序，AMS会先给最高优先级接收者发送广播，该接收器处理完广播后需要返回处理结果给AMS，然后再向次优先级接收者发送广播，依此类推。广播接收者可以把处理结果传递给是下一个接收者，也可以终止广播的传递。如果某个接收者超时或者终止了广播，那么后面的接收者也将无法再收到广播，所以效率会比较低。
+有序广播对比普通广播，有几个关键的地方需要注意：</p>
+<ol type="1">
+<li><code>android:priority</code>用于设置接收器优先级。</li>
+<li><code>getResultData()</code>获取广播数据。</li>
+<li><code>setResultData()</code>向下一接收者传递数据。</li>
+<li><code>abortBroadcast()</code>用于终止广播的传递。</li>
+</ol></li>
+<li><p><strong>全局广播和局部广播</strong>，从机制上看，如果发送广播的可以被其他app（以app进程为限）接收，那么该广播为全局广播；如果只能被app内部接收，那么该广播为局部广播。</p>
+<p>全局广播在安全和性能方面存在一些问题，无疑增加了系统的负担，为了解决这方面的问题，可以通过设置“android:exported”，permission，setPackage等各种方式来限定接收范围，从而在安全和性能方面进行优化。</p>
+<p>局部广播(Android v4
+兼容包提供<code>android.support.v4.content.LocalBroadcastManager</code>工具类用于实现局部广播。)，也叫做本地广播，局部广播有以下3点优势：</p>
+<ul>
+<li><strong>你所传播的数据不会离开当前你的app，所以无需担心会泄漏私人数据。</strong></li>
+<li><strong>其他app无法发送广播到你的app，所以你无需担心这些广播导致的安全漏洞。</strong></li>
+<li><strong>比起通过系统来实现发送的全局广播，这种方式更高效（不需要发送给整个系统）。</strong></li>
+</ul>
+<p>局部广播相对于全局广播来说更加高效的原因是，其内部实现并不是采用Binder机制，而是采用Handler机制，发送局部广播，其实就是向Handler发送了一个Message，但是其需要注意的地方有:</p>
+<ul>
+<li><strong>只能通过动态注册。</strong></li>
+<li><strong>一定不要忘记前面提到的三个方法前加上<code>LocalBroadcastManager.getInstance(mContext)</code>，否则可能接收不到广播或者无法实现局部广播的效果。</strong></li>
+</ul></li>
+<li><p><strong>前台广播和后台广播</strong>，根据发送的广播被接收的优先级，可以将广播分为前台广播和后台广播。</p>
+<p>前台广播是为了减少广播接收的延时(添加<code>Intent.FLAG_RECEIVER_FOREGROUND</code>这个flag，可以将广播设置为前台广播)，前台广播的ANR时间限制是10s。未设置这个flag的广播则是后台广播，后台广播的ANR时间限制是60s。</p></li>
+<li><p><strong>并行广播和串行广播</strong>，根据接收和处理广播事件的方式是并行的还是串行的，可以把广播分为并行广播和串行广播。</p>
+<p>并行广播，在代码中注册的普通广播。</p>
+<p>串行广播，在文件清单中注册的普通广播，和有序广播。</p></li>
+<li><p><strong>粘性广播和非粘性广播</strong>(Android5.0开始已经废弃掉)</p></li>
+</ul>
+<h3 id="broadcast-receiver的生命周期">Broadcast Receiver的生命周期</h3>
+<p>广播接收器自然也有自己的生命周期。只是它的生命周期非常简单且非常短，只有onReceive一个回调方法，当收到广播产生onReceive回调开始，到onReceive方法执行完并return，广播接收器的生命周期便宣告结束。<strong>Broadcast
+Receiver默认运行在UI线程，所以不要运行耗时的操作，也不要在receiver中开启线程进行耗时操作，因为当onReceive()返回时，Broadcast
+Receiver的生命周期就已经结束了，系统随时可能进行回收，线程可能无法按照预期运行。解决办法是可以使用：jobService，goAsync，startService(最常使用)。</strong></p>
+<h3 id="onreceive方法的上下文">onReceive()方法的上下文</h3>
+<p>广播接收器的Context：</p>
+<ul>
+<li>局部广播：applicationContext实例</li>
+<li>静态注册的广播：ReceiverRestrictedContext实例</li>
+<li>动态注册的广播：组件(Activity,Service)的context实例</li>
+</ul>
+<h3
+id="不同android版本广播机制的重要变迁">不同Android版本广播机制的重要变迁</h3>
+<ul>
+<li>Android5.0，废弃掉粘性广播</li>
+<li>Android7.0，不在发送<code>ACTION_NEW_PICTURE</code>和<code>ACTION_NEW_VIDEO</code>系统广播，同时<code>CONNECTIVITY_ACTION</code>只能动态注册才能接收到。</li>
+<li>Android8.0，系统对清单声明的接收器施加了额外的限制，对于大多数隐式广播（没有明确针对您的应用的广播），您不能使用静态注册来声明接收器。</li>
+<li>Android9.0，<code>NEWWORK_STATE_CHANGED_ACTION</code>广播不再接收有关用户位置或个人身份数据的信息，此外，通过
+WLAN 接收的系统广播不包含 SSID、BSSID、连接信息或扫描结果。</li>
+</ul>
+<h2 id="content-provider">Content Provider</h2>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android-Basis/" rel="tag"># Android基础</a>
+              <a href="/tags/Activity/" rel="tag"># Activity</a>
+              <a href="/tags/Service/" rel="tag"># Service</a>
+              <a href="/tags/Broadcast/" rel="tag"># Broadcast</a>
+              <a href="/tags/Content-Provider/" rel="tag"># Content Provider</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/f366cc9a/" rel="prev" title="Android基础-Intent和Intent Filter的匹配规则">
+                  <i class="fa fa-chevron-left"></i> Android基础-Intent和Intent Filter的匹配规则
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/424bac86/" rel="next" title="Android基础-Handler消息机制">
+                  Android基础-Handler消息机制 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '3ff6573fe78676e96cc1fe6cfc1a7196',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

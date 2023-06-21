@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Android基础-Activity的四种启动模式 我们都知道，Android为Activity提供了standard，singleTop,singleTask和singleInstance4种启动模式(LaunchMode)，以适应不同的启动场景。但是如果想要熟练的掌握这些启动模式，并非你想象的那么简单，这其中会遇到一些坑，而且有的这些坑是Android官方文档带来的，在实践的过程中你会发现，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android基础-Activity的四种启动模式">
+<meta property="og:url" content="https://sachil.xyz/posts/a3b77b7e/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Android基础-Activity的四种启动模式 我们都知道，Android为Activity提供了standard，singleTop,singleTask和singleInstance4种启动模式(LaunchMode)，以适应不同的启动场景。但是如果想要熟练的掌握这些启动模式，并非你想象的那么简单，这其中会遇到一些坑，而且有的这些坑是Android官方文档带来的，在实践的过程中你会发现，">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-08-20T05:10:40.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="Android基础">
+<meta property="article:tag" content="启动模式">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/a3b77b7e/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Android基础-Activity的四种启动模式 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android%E5%9F%BA%E7%A1%80-activity%E7%9A%84%E5%9B%9B%E7%A7%8D%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">Android基础-Activity的四种启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFtask%E5%92%8C%E5%9B%9E%E9%80%80%E6%A0%88"><span class="nav-number">1.1.</span> <span class="nav-text">什么是Task和回退栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">四种不同的启动模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#standard"><span class="nav-number">1.2.1.</span> <span class="nav-text">standard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singletop"><span class="nav-number">1.2.2.</span> <span class="nav-text">singleTop</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singletask"><span class="nav-number">1.2.3.</span> <span class="nav-text">singleTask</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#singleinstance"><span class="nav-number">1.2.4.</span> <span class="nav-text">singleInstance</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#intent%E7%9A%84flag"><span class="nav-number">1.3.</span> <span class="nav-text">Intent的flag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E4%BA%9B%E7%89%B9%E6%AE%8A%E6%83%85%E5%86%B5"><span class="nav-number">1.4.</span> <span class="nav-text">一些特殊情况</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#allowtaskreparenting"><span class="nav-number">1.4.1.</span> <span class="nav-text">allowTaskReparenting</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#taskaffinity"><span class="nav-number">1.4.2.</span> <span class="nav-text">taskAffinity</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.5.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/a3b77b7e/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android基础-Activity的四种启动模式
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2018-08-20 13:10:40" itemprop="dateCreated datePublished" datetime="2018-08-20T13:10:40+08:00">2018-08-20</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android-Basis/" itemprop="url" rel="index"><span itemprop="name">Android基础</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1
+id="android基础-activity的四种启动模式">Android基础-Activity的四种启动模式</h1>
+<p>我们都知道，Android为Activity提供了<code>standard</code>，<code>singleTop</code>,<code>singleTask</code>和<code>singleInstance</code>4种启动模式(LaunchMode)，以适应不同的启动场景。但是如果想要熟练的掌握这些启动模式，并非你想象的那么简单，这其中会遇到一些坑，而且有的这些坑是Android官方文档带来的，在实践的过程中你会发现，有的现象和官方文档描述的完全不同(简直是坑你没商量啊！)，还有的官方文档中根本就没提。现在我们从实践中出发，来认真学习一下这4种启动模式。</p>
+<span id="more"></span>
+<h2 id="什么是task和回退栈">什么是Task和回退栈</h2>
+<p>Task被称之为任务，也就是我们在最近任务列表中看到的那一个个东西，就像这样：</p>
+<p><img src = "https://gitee.com/sachil/blog-pictures/raw/master/image/launch-mode-task.png" width="300" ></p>
+<p>当我们启动App时，App的默认Activity会被启动，并且这个Activity会被放进系统刚创建的一个Task中，我们可以在多个App间进行切换，其实更准确的说，我们是在多个Task间进行切换。每个Task都有一个自己的回退栈(BackStack)，它按顺序记录了用户打开的每一个Activity，这样当用户按返回键时，可以按照顺序依次关闭这些Activity，当返回栈中的最后一个Activity被关闭时，这个Task也就结束了。需要注意的是，这时候仍可以在最近任务列表中看到这个Task，但这个Task其实是结束了的，所以，<strong>在最近任务列表中看到的Task未必就是活着的</strong>。</p>
+<h2 id="四种不同的启动模式">四种不同的启动模式</h2>
+<p>为了更好的认识这四种启动模式的作用，以及区别它们之间又有什么不同，我们通过创建App1和App2两个App，并改变App2中SecondActivity的launchMode来研究这四种启动模式。</p>
+<p>App1的activity_main.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:app</span>=<span class="string">&quot;http://schemas.android.com/apk/res-auto&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  &lt;Button</span><br><span class="line">    android:id=&quot;@+id/mainButton&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Open&quot;</span><br><span class="line">    app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintTop_toTopOf=&quot;parent&quot; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>App1的MainActivity:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//App1的MainActivity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main)</span><br><span class="line">        <span class="comment">//点击button启动App2的SecondActivity</span></span><br><span class="line">        findViewById&lt;Button&gt;(R.id.mainButton).setOnClickListener &#123;</span><br><span class="line">            <span class="keyword">val</span> intent = Intent()</span><br><span class="line">            intent.action = <span class="string">&quot;com.perry.target&quot;</span></span><br><span class="line">            startActivity(intent)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>App2的activity_main.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:app</span>=<span class="string">&quot;http://schemas.android.com/apk/res-auto&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:tools</span>=<span class="string">&quot;http://schemas.android.com/tools&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">tools:context</span>=<span class="string">&quot;.MainActivity&quot;</span>&gt;</span></span><br><span class="line">    </span><br><span class="line">  &lt;Button</span><br><span class="line">    android:id=&quot;@+id/mainButton&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_marginTop=&quot;16dp&quot;</span><br><span class="line">    app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintEnd_toEndOf=&quot;@id/mainTextView&quot;</span><br><span class="line">    app:layout_constraintStart_toStartOf=&quot;@id/mainTextView&quot;</span><br><span class="line">    app:layout_constraintTop_toBottomOf=&quot;@id/mainTextView&quot;</span><br><span class="line">    android:text=&quot;Jump to second&quot;/&gt;</span><br><span class="line"></span><br><span class="line">  &lt;TextView</span><br><span class="line">    android:id=&quot;@+id/mainTextView&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Main Activity&quot;</span><br><span class="line">    app:layout_constraintBottom_toTopOf=&quot;@id/mainButton&quot;</span><br><span class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintTop_toTopOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintVertical_chainStyle=&quot;packed&quot; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>App2的activity_second.xml：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:app</span>=<span class="string">&quot;http://schemas.android.com/apk/res-auto&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  &lt;Button</span><br><span class="line">    android:id=&quot;@+id/secondButton&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_marginTop=&quot;16dp&quot;</span><br><span class="line">    android:text=&quot;Jump to Third&quot;</span><br><span class="line">    app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintEnd_toEndOf=&quot;@id/secondTextView&quot;</span><br><span class="line">    app:layout_constraintStart_toStartOf=&quot;@id/secondTextView&quot;</span><br><span class="line">    app:layout_constraintTop_toBottomOf=&quot;@id/secondTextView&quot; /&gt;</span><br><span class="line"></span><br><span class="line">  &lt;TextView</span><br><span class="line">    android:id=&quot;@+id/secondTextView&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Second Activity&quot;</span><br><span class="line">    app:layout_constraintBottom_toTopOf=&quot;@id/secondButton&quot;</span><br><span class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintTop_toTopOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintVertical_chainStyle=&quot;packed&quot; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>App2的activity_third.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">xmlns:app</span>=<span class="string">&quot;http://schemas.android.com/apk/res-auto&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_width</span>=<span class="string">&quot;match_parent&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">android:layout_height</span>=<span class="string">&quot;match_parent&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  &lt;TextView</span><br><span class="line">    android:id=&quot;@+id/mainTextView&quot;</span><br><span class="line">    android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">    android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">    android:text=&quot;Third Activity&quot;</span><br><span class="line">    app:layout_constraintBottom_toBottomOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintLeft_toLeftOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintRight_toRightOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintTop_toTopOf=&quot;parent&quot;</span><br><span class="line">    app:layout_constraintVertical_chainStyle=&quot;packed&quot; /&gt;</span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">androidx.constraintlayout.widget.ConstraintLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>App2的MainActivity，SecondActivity和ThirdActivity：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//App2的MainActivity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_main)</span><br><span class="line">        <span class="comment">//点击button启动SecondActivity</span></span><br><span class="line">        findViewById&lt;Button&gt;(R.id.mainButton).setOnClickListener &#123;</span><br><span class="line">            startActivity(Intent(<span class="keyword">this</span>, SecondActivity::<span class="keyword">class</span>.java))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//App2的SecondActivity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SecondActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span>&#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">const</span> <span class="keyword">val</span> TAG = <span class="string">&quot;SecondActivity&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        Log.e(TAG,<span class="string">&quot;Activity on created.&quot;</span>)</span><br><span class="line">        setContentView(R.layout.activity_second)</span><br><span class="line">        <span class="comment">//点击button启动ThirdActivity</span></span><br><span class="line">        findViewById&lt;Button&gt;(R.id.secondButton).setOnClickListener &#123;</span><br><span class="line">            startActivity(Intent(<span class="keyword">this</span>, ThirdActivity::<span class="keyword">class</span>.java))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onNewIntent</span><span class="params">(intent: <span class="type">Intent</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onNewIntent(intent)</span><br><span class="line">        Log.e(TAG,<span class="string">&quot;Activity on new Intent.&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//App2的ThirdActivity</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ThirdActivity</span> : <span class="type">AppCompatActivity</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">onCreate</span><span class="params">(savedInstanceState: <span class="type">Bundle</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate(savedInstanceState)</span><br><span class="line">        setContentView(R.layout.activity_third)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>App2的AndroidManifest.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">manifest</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span></span><br><span class="line"><span class="tag">  <span class="attr">package</span>=<span class="string">&quot;xyz.sachil.app2&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  &lt;application</span><br><span class="line">    android:allowBackup=&quot;true&quot;</span><br><span class="line">    android:icon=&quot;@mipmap/ic_launcher&quot;</span><br><span class="line">    android:label=&quot;@string/app_name&quot;</span><br><span class="line">    android:roundIcon=&quot;@mipmap/ic_launcher_round&quot;</span><br><span class="line">    android:supportsRtl=&quot;true&quot;</span><br><span class="line">    android:theme=&quot;@style/Theme.LaunchMode&quot;&gt;</span><br><span class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">&quot;.MainActivity&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    &lt;activity</span><br><span class="line">      android:exported=&quot;true&quot;</span><br><span class="line">      android:name=&quot;.SecondActivity&quot;</span><br><span class="line">      android:launchMode=&quot;standard&quot;&gt;</span><br><span class="line">      <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;com.perry.target&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.DEFAULT&quot;</span>/&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">activity</span> <span class="attr">android:name</span>=<span class="string">&quot;.ThirdActivity&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">application</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>最常见的修改启动模式的方法就是在<code>AndroidManifest.xml</code>中进行修改：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">activity</span>  <span class="attr">android:launchMode</span>=<span class="string">&quot;standard|singleTop|singleTask|singleIntance&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="standard">standard</h3>
+<p>这是默认的启动模式，每次启动Activity时都会创建一个新的Activity，并放入Task的栈顶，当你在不同的Task中启动相同的Activity时，这个Activity会被创建出不同的实例，并分别放入不同的Task中，它们之间互不干扰。</p>
+<p>例如我们将SecondActivity的启动模式修改为<code>standard</code>，启动App1的MainActivity，它被放入名为task1的Task中，然后点击button启动App2的SecondActivity，SecondActivity的实例会被创建，并被放入task1中。这时候将App1退到后台，然后启动App2，会创建App2的MainActivity，并放入名为task2的Task中，然后点击button启动SecondActivity，这时又会创建一个SenondActivity的实例，并将它放入task2中。task1中的SecondActivity和task2中的SecondActivity互不影响。</p>
+<h3 id="singletop">singleTop</h3>
+<p>它和<code>standard</code>一样，也是会直接把创建的Activity放入Task的栈顶，它们两者之间的区别是：<strong>如果启动Activity的时候，Task栈顶正好存在该Activity的实例，那么就不会调用<code>onCreate()</code>方法新建该Activity，而是直接调用该Activity的<code>onNewIntent()</code>方法对该Activity进行重用</strong>。</p>
+<h3 id="singletask">singleTask</h3>
+<p><code>singleTask</code>可以让Activity在被其它App启动的时候不会将该Activity放入启动它的Task中，而是会在属于它自己的Task中创建，并放入栈顶，然后将整个Task压在启动它的Task的上面。这样就可以保证，不管从哪个App启动，被标记了<code>singleTask</code>的Activity总是会被放入自己他Task中。细心的你可以发现，以这种方式打开的Activity的入场动画是应用䙦乱C切换的动画，而不是普通的Activity的入场动画，这也就是在刻意的提醒你，这是在进行跨任务操作。</p>
+<p>例如我们将SecondActivity启动模式修改为<code>singleTask</code>，启动App1的MainActivity，它被放入名为task1的Task中，然后点击button启动App2的SecondActivity，SecondActivity的实例会被创建，并被放入task2中，并且会将task2叠在task1之上，如果这时候按返回键，将会执行task2中Activity的出栈，当task2回退栈被清空时(也就是task2结束时)，才会切回task1。这就是说，不仅是Task内部的Activity可以叠成栈，Task之间也可以叠成栈。但是，<strong>Task的叠加只适用于前台Task，一旦前台叠加的多个Task进入后台，它们之间的叠加关系就会被拆开</strong>。例如前面提到的task2结束时，将不再切回task1，而是直接返回桌面。有两种操作会让Task进入后台，一种是回到桌面，另一种是查看最近任务列表。</p>
+<p>还有一点需要注意的是：<strong>在启动标记为<code>singleTask</code>的Activity时，如果该Activity在其Task中已经被创建，那么将会调用它的<code>onNewIntent()</code>方法进行重用，而不是调用<code>onCreate()</code>方法再新建一个。同时，如果该Activity不在其Task的栈顶，还会将其上面的其它Activity清空，以确保其出现在Task的栈顶</strong>。</p>
+<p><code>singleTask</code>强调的是唯一性：使用该启动模式的Activity只会出现在某一个Task中，并且这个Task中只会有一个该Activity的实例。</p>
+<h3 id="singleinstance">singleInstance</h3>
+<p>它的行为逻辑和<code>singleTask</code>基本一致,但是它有更严格的限制：<strong>使用该启动模式的Activity所在的Task中只能有这一个Activity，Task中该Activity的下面和上面都不能有其它Activity的存在</strong>。前面我们提到<code>singleTask</code>强调唯一性，而<code>singleInstance</code>不仅强调唯一性，而且还强调独占性，它要独占整个Task。</p>
+<p>在实际操作中，Activity在被启动后按返回键，<code>singleTask</code>标记的会在自己的Task中回退，而<code>singleInstance</code>标记的会直接返回启动的App(这其实很好理解，因为<code>singleInstance</code>的Task中只有一个Activity，一按返回键，这个Task就结束了)，稍候从桌面点开该Activity所在的App时，<code>singleTask</code>标记的Activity仍然在栈顶，而<code>singleInstance</code>标记的Activity却已经不见了，你以为它已经不存在了，但是当你使用<code>adb shell dumpsys activity</code>命令查看的时候，它却是存在的。前面我们提到，<strong>在最近任务列表里出现的Task不一定是活着的</strong>，这里还需要加上一句：<strong>在最近任务列表中未出现的Task也未必就是死的</strong>。</p>
+<p>另外需要注意一下的是，在<code>singleInstance</code>模式下，如果存在任务栈task1(A-&gt;B-&gt;C)，C启动D(D为<code>singleInstance</code>模式)，则会创建任务栈task2(D)，然后D再启动C，这时任务栈task1为A-&gt;B-&gt;C-&gt;C，如果这时候按返回键，是不会返回到task2(D)的，而是任务栈task1回退(A-&gt;B-&gt;C)，只有当任务栈task1清空时再按返回，才会返回到任务栈task2(D)。</p>
+<h2 id="intent的flag">Intent的flag</h2>
+<p>在启动Activity时，可以在传送给<code>startActivity()</code>的Intent中添加相应的flag来修改Activity与其Task的默认关联，最常使用flag有以下几个：</p>
+<ul>
+<li><p><code>Intent.FLAG_ACTIVITY_SINGLE_TOP</code>，与使用<code>singleTop</code>所产生的行为相同。</p></li>
+<li><p><code>Intent.FLAG_ACTIVITY_NEW_TASK</code>，如果在同一Task中单独使用，没有效果。如果是跨Task使用，如果该Activity的Task不存在，则创建该Task并新建该Activity的实例放入其中，如果该Activity的Task已经存在，则新建该Activity的实例放入该Task的栈顶。</p>
+<p>如果搭配<code>Intent.FLAG_ACTIVITY_MULTIPLE_TASK</code>一起使用的话，产生的行为和<code>singleInstance</code>相似，不同的是标记为<code>singleInstance</code>的Activity会独占Task，而这里却不会。</p></li>
+<li><p><code>Intent.FLAG_ACTIVITY_CLEAR_TOP</code>，单独使用时，如果要启动的Activity已经存在于Task中，并且该Activity的启动模式为<code>standard</code>，则会销毁该Activity以及它上面的Activity，并重新创建一个该Activity的实例放入Task栈顶。如果搭配<code>Intent.FLAG_ACTIVITY_SINGLE_TOP</code>使用或者将Activity的启动模式改为非<code>standard</code>，则只会销毁该Activity上面的其它Activity而不会销毁它自己，并调用<code>onNewIntent()</code>方法进行重用。</p>
+<p>该flag常常搭配<code>Intent.FLAG_ACTIVITY_CLEAR_TOP</code>一起使用。</p></li>
+</ul>
+<h2 id="一些特殊情况">一些特殊情况</h2>
+<h3 id="allowtaskreparenting">allowTaskReparenting</h3>
+<p>默认情况下，Activity只会归属于某一个Task，不会在多个Task之间跳来跳去，但是<code>allowTaskReparenting</code>属性却可以改变这个行为，当它设置为<code>true</code>时，可以允许Activity回到它原本所属的Task中。</p>
+<p>例如我们将SecondActivity的<code>allowTaskReparenting</code>属性设置为<code>true</code>，这时候启动App1的MainActivity，它会被放入task1中，点击button启动SecondActivity，Secondactivity会被放入task1的栈顶，然后回到桌面启动App2，你会看到原本在task1中的SecondActivity已经被挪到App2的task2的栈顶了，这时候再切回App1就看不到SecondActivity了。</p>
+<p>另外我们需要注意的是，从App1中启动SecondActivity后，我们回到桌面，这时候我们不启动App2，而是点击App1的图标回到App1,你会发现SecondActivity也是不见了，这时候使用<code>adb shell dumpsys activity</code>命令可以发现，它已经被挪走了，在Android11的最近任务列表中你可以看到App1的Task和Secondactivity的Task两个Task，但是在Android7的最近任务列表中你只能看到App1的Task这一个Task。而如果在回到桌面后不是通过点击App1的图标回到App1,而是通过最近任务列表返回App1,你会看到SecondActivity仍然在App1的栈顶。(仅仅因为回到App1的方式不同，就可以决定SecondActivity是否被挪走，Android这种设计让我很迷惑啊。)</p>
+<p><strong>关于这个属性的友情提醒，它在Android9和Android10上没有用</strong>。(可能是被改坏了，太坑了。)</p>
+<h3 id="taskaffinity">taskAffinity</h3>
+<p><code>taskAffinity</code>表示亲和性、相似性的意思，也就是表示Activity更倾向于属于哪一个Task。在Android上，一个App默认只有一个Task显示在最近任务列表中，这里的唯一性是通过<code>taskAffinity</code>来进行区分的。每一个Activity都有一个<code>taskAffinity</code>，就相当于对每一个Activity进行了分组，它的默认值是application的<code>taskAffinity</code>，而application中<code>taskAffinity</code>的默认值就是包名。</p>
+<p>另外，每一个Task也有它的<code>taskAffinity</code>，它的值取自于Task栈底Activity的<code>taskAffinity</code>。默认情况下，一个App的所有Task的<code>taskAffinity</code>都是一样的，也就是App的包名，当我们启动一个Task时，它会从第一个入栈的Activity的<code>taskAffinity</code>得到自己的<code>taskAffinity</code>，当我们接着打开Activity的时候，<code>taskAffinity</code>就被忽略了，新的Activity会直接入栈。但是如果新的Activity被标记为<code>singleTask</code>时，Android就会去检查新的Activity的<code>taskAffinity</code>是否和当前Task的<code>taskAffinity</code>是一致的，如果一致则继续入栈操作，否则新的Activity会被放入和它拥有相同<code>taskAffinity</code>的Task中，如果没有这样的Task，就创建一个。所以，<strong><code>taskAffinity</code>搭配<code>standard</code>和<code>singleTop</code>是不起作用的，它需要搭配<code>singleTask</code>一起使用</strong>。</p>
+<p>当你在你的App中启动一个标记为<code>singleTask</code>的Activity，如果这个Activity属于其它App，就会发生Task切换，而如果这个Activity属于自己的App，则直接将它放入当前Task的栈顶，这是因为该Activity的<code>taskAffinity</code>和Task的一样。而如果你再给该Activity设置一个独立的<code>taskAffinity</code>，你会发现，哪怕是同一个App，该Activity也会被放入其它的Task中，从而发生Task切换，而这时候正好该Activity的<code>taskAffinity</code>和其它App一致，那么这个Activity会被放入那个App的Task中(注意：这种现象在Android11上不会发生，这是因为Task的<code>taskAffinity</code>被加上了随机的前缀，这样即使这个Activity的<code>taskAffinity</code>设置为和其它App的一样，最终运行的时候，它们Task的<code>taskAffinity</code>还是会不一样。这样的更改，我想应该是处于安全的考虑)。如果这时候再从这个设置了独立<code>taskAffinity</code>的Activity中启动一个新的未设置<code>taskActivity</code>的Activity，那这个新的Activity会被放入哪个Task中呢？如果这个新的Activity被标记为<code>standard</code>或者<code>singleTop</code>，那么它就会被放到那个设置了独立<code>taskAffinity</code>的Activity的Task中，而如果被标记为<code>singleTask</code>，那么它就会被放到原本它就该属于的Task中。</p>
+<p>当我们在查看最近任务列表的时候，不同的Task会被展示出来，但是前提条件就是，它们之间的<code>taskAffinity</code>是不一样的。在Android中，同一个<code>taskAffinity</code>可以创建出多个Task，但是它们只能有一个显示在最近任务别表中，这就是前面提到的那个被标记为<code>singleInstance</code>的Activity会从最近任务列表中消失的原因，因为它被具有相同<code>taskAffinity</code>的Task抢占了。</p>
+<h2 id="总结">总结</h2>
+<p>总的来说，<code>standard</code>和<code>singleTop</code>是直接将Activity叠加在当前的Task上，而<code>singleTask</code>和<code>singleInstance</code>则是两个"跨Task打开Activity"的规则，虽然不是一定跨Task，但是却表现出了强烈的跨Task意图。在平时的使用中，我们在App内部会多使用<code>standard</code>和<code>singleTop</code>，<code>singleInstance</code>会多用于开放给其它App一起使用的共享Activity，而<code>singleTask</code>这比较兼容，内部使用或者外部交互都可以使用。</p>
+<hr />
+<p>参考文献：</p>
+<p><a
+target="_blank" rel="noopener" href="https://rengwuxian.com/dang-wo-an-xia-home-jian-zai-qie-hui-lai-hui-fa-sheng-shen-me/">Android
+面试黑洞——当我按下 Home 键再切回来，会发生什么？</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android-Basis/" rel="tag"># Android基础</a>
+              <a href="/tags/Launch-Mode/" rel="tag"># 启动模式</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/a2b68561/" rel="prev" title="Android中的LruCache缓存">
+                  <i class="fa fa-chevron-left"></i> Android中的LruCache缓存
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/f366cc9a/" rel="next" title="Android基础-Intent和Intent Filter的匹配规则">
+                  Android基础-Intent和Intent Filter的匹配规则 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '89c1611efcb07c90885d8bd965c589fa',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Kotlin基础知识 getter、setter访问器 getter称为读访问器，setter称为写访问器，val修饰的属性只有getter访问器，var修饰的属性包含getter和setter两种访问器，Kotlin中访问一个属性的本质就是调用getter和setter访问器。getter的可见性必须和属性声明的可见性一致，setter的可见性不能大于属性声明的可见性(属性可见性为publi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin基础知识">
+<meta property="og:url" content="https://sachil.xyz/posts/5498e339/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Kotlin基础知识 getter、setter访问器 getter称为读访问器，setter称为写访问器，val修饰的属性只有getter访问器，var修饰的属性包含getter和setter两种访问器，Kotlin中访问一个属性的本质就是调用getter和setter访问器。getter的可见性必须和属性声明的可见性一致，setter的可见性不能大于属性声明的可见性(属性可见性为publi">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-05T13:20:56.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="Kotlin">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/5498e339/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Kotlin基础知识 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kotlin%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">1.</span> <span class="nav-text">Kotlin基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#gettersetter%E8%AE%BF%E9%97%AE%E5%99%A8"><span class="nav-number">1.1.</span> <span class="nav-text">getter、setter访问器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%95%E5%90%8E%E5%AD%97%E6%AE%B5%E5%92%8C%E5%B9%95%E5%90%8E%E5%A3%B0%E6%98%8E"><span class="nav-number">1.2.</span> <span class="nav-text">幕后字段和幕后声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%93const%E9%81%87%E5%88%B0val%E6%97%B6%E7%9A%84%E7%BB%86%E8%8A%82"><span class="nav-number">1.3.</span> <span class="nav-text">当const遇到val时的细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#interface%E6%8E%A5%E5%8F%A3"><span class="nav-number">1.4.</span> <span class="nav-text">interface【接口】</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%AF%E8%A7%81%E6%80%A7%E4%BF%AE%E9%A5%B0%E7%AC%A6"><span class="nav-number">1.5.</span> <span class="nav-text">可见性修饰符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kotlin%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E9%A1%BA%E5%BA%8F"><span class="nav-number">1.6.</span> <span class="nav-text">Kotlin的初始化顺序</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/5498e339/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kotlin基础知识
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-05 21:20:56" itemprop="dateCreated datePublished" datetime="2019-11-05T21:20:56+08:00">2019-11-05</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Kotlin/" itemprop="url" rel="index"><span itemprop="name">Kotlin</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="kotlin基础知识">Kotlin基础知识</h1>
+<h2 id="gettersetter访问器">getter、setter访问器</h2>
+<p>getter称为读访问器，setter称为写访问器，val修饰的属性只有getter访问器，var修饰的属性包含getter和setter两种访问器，Kotlin中访问一个属性的本质就是调用getter和setter访问器。<strong>getter的可见性必须和属性声明的可见性一致，setter的可见性不能大于属性声明的可见性(属性可见性为public，setter的可见性可以是private)。</strong></p>
+<span id="more"></span>
+<h2 id="幕后字段和幕后声明">幕后字段和幕后声明</h2>
+<p><strong>在Kotlin中，如果属性至少一个访问器使用默认实现，那么Kotlin将会自动提供幕后字段，用关键字<code>field</code>表示，幕后字段的主要作用是用于自定义getter和setter，并且只能在getter和setter中使用。</strong>在Kotlin中，并不是所有的属性都有幕后字段，一个属性拥有幕后字段需要满足以下两个条件之一：</p>
+<ul>
+<li>使用默认getter/setter访问器的属性，一定拥有幕后字段。对于var属性，getter和setter其中之一使用默认实现，就会生成幕后字段。</li>
+<li>在自定义getter/setter中使用了<code>field</code>。</li>
+</ul>
+<p>下面这个例子就没有幕后字段：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">NoField</span></span>&#123;</span><br><span class="line">    <span class="keyword">val</span> size = <span class="number">0</span></span><br><span class="line">    <span class="comment">//isEmpty没有幕后字段</span></span><br><span class="line">    <span class="keyword">val</span> isEmpty: <span class="built_in">Boolean</span></span><br><span class="line">        <span class="keyword">get</span>() = size == <span class="number">0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>有幕后字段的属性在转为Java代码时一定会生成一个对应的Java变量，否则将只会生成对应的get或者set方法而没有成员变量。</strong></p>
+<p>幕后属性一般在这种情况下使用：<strong>我们期望一个属性对外表现为只读，对内表现为可读可写</strong>，这样我们可以使用幕后属性来实现：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这里_table可见性为private，只能在内部访问，而外部可访问的table属性的值取决于_table</span></span><br><span class="line"><span class="comment">//所以_table就是一个幕后属性</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KotlinTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">var</span> _table: Map&lt;String, <span class="built_in">Int</span>&gt;? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">val</span> table: Map&lt;String, <span class="built_in">Int</span>&gt;</span><br><span class="line">        <span class="keyword">get</span>() &#123;</span><br><span class="line">            <span class="keyword">if</span> (_table == <span class="literal">null</span>)</span><br><span class="line">                _table = HashMap()</span><br><span class="line">            <span class="keyword">return</span> _table ?: <span class="keyword">throw</span> AssertionError(<span class="string">&quot;table为空&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="当const遇到val时的细节">当const遇到val时的细节</h2>
+<p><code>val</code>用来声明只读变量，<code>const</code>用来声明编译期的常量，<code>const</code>修饰的常量需要同时满足以下三个条件：</p>
+<ul>
+<li>只能是字符串和基础类型</li>
+<li>只能是全局常量【top
+level】、object成员、companion对象【伴生对象】的成员</li>
+<li>const不能单独修饰某个变量，必须和val同时修饰一个变量</li>
+</ul>
+<p>const
+val修饰的变量，一定是编译时的常量，在编译期就知道它的值，不需要依赖运行时的任何变量。而val修饰的变量，是只读变量，只能赋值一次，可以是运行期间赋值，编译期常量属于只读变量的一种特殊情况。</p>
+<p>const的好处是：<strong>在Java代码中引用Kotlin变量时，不能直接使用val的变量，但可以直接使用<code>const val</code>修饰的变量。</strong>例如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KotlinTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">val</span> NAME = <span class="string">&quot;Perry&quot;</span></span><br><span class="line">        <span class="keyword">val</span> age = <span class="number">30</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JavaTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> static void main(String[] args) &#123;</span><br><span class="line">        <span class="comment">//可直接访问const val修饰的变量</span></span><br><span class="line">        System.<span class="keyword">out</span>.println(<span class="string">&quot;JavaTest:&quot;</span>+KotlinTest.NAME);</span><br><span class="line">        <span class="comment">//不能直接访问没有const修饰的变量，并且会自动生成getAge()方法</span></span><br><span class="line">        System.<span class="keyword">out</span>.println(<span class="string">&quot;JavaTest:&quot;</span>+KotlinTest.Companion.getAge());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以能用<code>const val</code>声明的变量就不要只用<code>val</code>来声明，因为这样不优雅，编译性能也更低。<code>const val</code>不会生成相应的<code>getXXX()</code>方法，具体原因可以通过转换为Java代码来查看：</p>
+<p>Kotlin代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KotlinTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span>&#123;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">val</span> NAME = <span class="string">&quot;Perry&quot;</span></span><br><span class="line">        <span class="keyword">val</span> age = <span class="number">30</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对应的Java代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">KotlinTest</span> </span>&#123;</span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">    <span class="comment">//companion中的const val变量，生成了public static final静态常量</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String NAME = <span class="string">&quot;Perry&quot;</span>;</span><br><span class="line">    <span class="comment">//companion中的val变量，生成了private static final静态常量</span></span><br><span class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> age = <span class="number">30</span>;</span><br><span class="line">   <span class="meta">@NotNull</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> KotlinTest.Companion Companion = <span class="keyword">new</span> KotlinTest.Companion((DefaultConstructorMarker)<span class="keyword">null</span>);</span><br><span class="line">    </span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Companion</span> </span>&#123;</span><br><span class="line">       <span class="comment">//生成对应的get方法</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getAge</span><span class="params">()</span> </span>&#123;</span><br><span class="line">         <span class="keyword">return</span> KotlinTest.age;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">private</span> <span class="title">Companion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// $FF: synthetic method</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Companion</span><span class="params">(DefaultConstructorMarker $constructor_marker)</span> </span>&#123;</span><br><span class="line">         <span class="keyword">this</span>();</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过转换为Java代码可以知道，<strong>const
+val声明的变量，生成了<code>public static final</code>静态常量，而val声明的变量，生成了<code>private static final</code>静态常量，同时还生成了对应的getXXX()方法。</strong></p>
+<h2 id="interface接口">interface【接口】</h2>
+<p>Kotlin中的接口即可以包含抽象方法也可以包含具体的方法实现，接口与抽象类不同，它不能保存状态，接口中可以包含属性，但它必须声明为抽象的或者提供访问器实现，<strong>接口中的属性不能包含幕后字段</strong>。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="comment">//抽象的属性</span></span><br><span class="line">    <span class="keyword">var</span> name: String</span><br><span class="line"></span><br><span class="line">    <span class="comment">//提供访问器</span></span><br><span class="line">    <span class="keyword">val</span> age: <span class="built_in">Int</span></span><br><span class="line">        <span class="keyword">get</span>() = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//Error:不能在接口中初始化属性</span></span><br><span class="line">    <span class="keyword">val</span> weight: <span class="built_in">Float</span> = <span class="number">60F</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//抽象的方法，子类必须实现</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">eat</span><span class="params">()</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//具体的方法，子类可以不用实现</span></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sleep</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;Sleeping...&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在主构造器中覆盖属性</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student1</span></span>(<span class="keyword">override</span> <span class="keyword">var</span> name: String, <span class="keyword">override</span> <span class="keyword">val</span> age: <span class="built_in">Int</span> = <span class="number">32</span>) : Person &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">eat</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;Eat...&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//在子类的内部覆盖属性</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student2</span></span>() : Person &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">var</span> name: String = <span class="string">&quot;Perry&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//可以用var覆盖val属性，反之不行</span></span><br><span class="line">    <span class="keyword">override</span> <span class="keyword">var</span> age: <span class="built_in">Int</span> = <span class="number">0</span></span><br><span class="line">        <span class="keyword">get</span>() = <span class="number">32</span></span><br><span class="line">        <span class="keyword">set</span>(value) &#123;</span><br><span class="line">            println(<span class="string">&quot;Setting age.&quot;</span>)</span><br><span class="line">            field = value</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">fun</span> <span class="title">eat</span><span class="params">()</span></span> &#123;</span><br><span class="line">        println(<span class="string">&quot;Not bad...&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当子类在实现的过程中出现覆盖冲突的时候，可以使用<code>super&lt;Parent&gt;.function()</code>的方式来指明具体调用哪一个父类的实现。</p>
+<h2 id="可见性修饰符">可见性修饰符</h2>
+<p>Kotlin中有四种可见性修饰符：</p>
+<ul>
+<li><strong>public</strong>:公开的，可见性最大，哪儿都能引用</li>
+<li><strong>private</strong>:私有的，可见性最小，根据声明位置的不同分为类中可见和文件中可见</li>
+<li><strong>protected</strong>:保护的，相当于private+子类可见</li>
+<li><strong>internal</strong>:内部的，同一个module可见，这里的module可以就是Android
+Studio中的module，这在写library时非常有用</li>
+</ul>
+<p>Kotlin中少了Java中的default【包内可见】，多了internal【module内可见】。这些可见性修饰符可以用于修饰类、接口、构造函数、方法、属性以及属性的getter和setter访问器。<strong>如果没有显示指定，默认的可见性是public。</strong></p>
+<p>还有就是需要注意的是：<strong>在Kotlin中，外部类无法访问内部类的protected和private成员，而这在Java中则是可以的。</strong></p>
+<h2 id="kotlin的初始化顺序">Kotlin的初始化顺序</h2>
+<ol type="1">
+<li>父类的伴生对象</li>
+<li>子类的伴生对象</li>
+<li>父类的普通成员变量和init初始化代码块，按照书写顺序</li>
+<li>父类的次构造方法</li>
+<li>子类的普通成员变量和init初始化代码块，按照书写顺序</li>
+<li>子类的次构造方法</li>
+</ol>
+<p>通过下面的例子可以更加容易理解：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Parent</span></span>(name: String) &#123;</span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> initBlock = <span class="string">&quot;Parent的初始化代码块&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> normalField = <span class="string">&quot;Parent的普通成员变量&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> staticField = <span class="string">&quot;Parent的伴生对象&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">constructor</span>(name: String, age: <span class="built_in">Int</span>) : <span class="keyword">this</span>(name) &#123;</span><br><span class="line">        <span class="keyword">val</span> field = <span class="string">&quot;Parent的次构造函数&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span></span>(name: String, age: <span class="built_in">Int</span>) : Parent(name, age) &#123;</span><br><span class="line">    <span class="keyword">val</span> normalField = <span class="string">&quot;Child的普通成员变量&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">init</span> &#123;</span><br><span class="line">        <span class="keyword">val</span> initBlock = <span class="string">&quot;Child的初始化代码块&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">constructor</span>(name: String, age: <span class="built_in">Int</span>, address: String) : <span class="keyword">this</span>(name, age) &#123;</span><br><span class="line">        <span class="keyword">val</span> field = <span class="string">&quot;Child的次构造函数&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">val</span> staticField = <span class="string">&quot;Child的伴生对象&quot;</span>.also &#123; println(it) &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">/**最终输出结果为：</span></span><br><span class="line"><span class="comment">     * Parent的伴生对象</span></span><br><span class="line"><span class="comment">     * Child的伴生对象</span></span><br><span class="line"><span class="comment">     * Parent的初始化代码块</span></span><br><span class="line"><span class="comment">     * Parent的普通成员变量</span></span><br><span class="line"><span class="comment">     * Parent的次构造函数</span></span><br><span class="line"><span class="comment">     * Child的普通成员变量</span></span><br><span class="line"><span class="comment">     * Child的初始化代码块</span></span><br><span class="line"><span class="comment">     * Child的次构造函数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">val</span> child = Child(<span class="string">&quot;Sky&quot;</span>, <span class="number">22</span>, <span class="string">&quot;China&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/633e61d5/" rel="prev" title="Jetpack之ViewModel">
+                  <i class="fa fa-chevron-left"></i> Jetpack之ViewModel
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2e419a6e/" rel="next" title="Kotlin中的委托">
+                  Kotlin中的委托 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '1177df3f96ed105a2896e524bc1910f8',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

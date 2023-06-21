@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Android实战-增量更新 增量更新是区别于全量更新而提出的。全量更新是指在应用更新时，每次都下载完整的安装包，进行覆盖安装。在Android早期，由于应用普遍比较小，因此为了简单便捷，普遍使用全量更新的方式，但是随着Android的发展，应用也变得越来越大，为了节省更新的时间，以及节省下载的流量，增量更新也就变得越来越普遍。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android实战-增量更新">
+<meta property="og:url" content="https://sachil.xyz/posts/4225ce89/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Android实战-增量更新 增量更新是区别于全量更新而提出的。全量更新是指在应用更新时，每次都下载完整的安装包，进行覆盖安装。在Android早期，由于应用普遍比较小，因此为了简单便捷，普遍使用全量更新的方式，但是随着Android的发展，应用也变得越来越大，为了节省更新的时间，以及节省下载的流量，增量更新也就变得越来越普遍。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-03-19T01:30:16.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="Android实战">
+<meta property="article:tag" content="增量更新">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/4225ce89/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Android实战-增量更新 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#android%E5%AE%9E%E6%88%98-%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0"><span class="nav-number">1.</span> <span class="nav-text">Android实战-增量更新</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%9B%B4%E6%96%B0%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-number">1.1.</span> <span class="nav-text">增量更新的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%AE%9E%E8%B7%B5"><span class="nav-number">1.2.</span> <span class="nav-text">操作实践</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">服务器端配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.2.</span> <span class="nav-text">客户端配置</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/4225ce89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Android实战-增量更新
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-03-19 09:30:16" itemprop="dateCreated datePublished" datetime="2019-03-19T09:30:16+08:00">2019-03-19</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android-Practice/" itemprop="url" rel="index"><span itemprop="name">Android实战</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="android实战-增量更新">Android实战-增量更新</h1>
+<p>增量更新是区别于全量更新而提出的。全量更新是指在应用更新时，每次都下载完整的安装包，进行覆盖安装。在Android早期，由于应用普遍比较小，因此为了简单便捷，普遍使用全量更新的方式，但是随着Android的发展，应用也变得越来越大，为了节省更新的时间，以及节省下载的流量，增量更新也就变得越来越普遍。</p>
+<span id="more"></span>
+<h2 id="增量更新的原理">增量更新的原理</h2>
+<p>在发布新版本的apk时，使用差分算法，计算出与老版本apk的差异，两个版本之间的不同的部分，生成一个patch文件，在升级的时候，用户只需要下载这个patch文件，然后旧版本的app利用这个patch文件与自己的apk合成，从而得到新版本的apk文件，再进行安装，这样app就升级为新的版本了。</p>
+<p>具体步骤一般是这样的：</p>
+<ol type="1">
+<li>在发布新版本apk上传到服务器时，同时生成与以往每一个版本的patch文件，以便app端升级时使用。</li>
+<li>app利用自己当前的版本信息向服务器查询升级服务，服务器一般会返回patch文件的下载地址，patch文件的MD5值，以及新版本APK的MD5值。</li>
+<li>app下载patch文件，并校验patch文件的MD5值是否正确，如果准确无误，则利用patch文件与自己的apk文件进行合成，生成新的apk文件，然后校验生成的apk文件的MD5值是否正确，如果准确无误，则进行安装。</li>
+</ol>
+<h2 id="操作实践">操作实践</h2>
+<p>增量升级的核心就是利用<code>diff/patch</code>算法来对新/旧apk进行<code>diff/patch</code>操作，当前主流的做法是利用<code>bsdiff</code>工具。</p>
+<h3 id="服务器端配置">服务器端配置</h3>
+<p>首先需要在服务器端安装<code>bsdiff</code>工具，由于该工具依赖<code>bzip2</code>库，所以需要先安装<code>bzip2</code>库文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install libbz2-dev <span class="comment">#ubuntu 18.04</span></span><br></pre></td></tr></table></figure>
+<p>然后下载<a
+target="_blank" rel="noopener" href="https://github.com/mendsley/bsdiff/archive/v4.3.tar.gz">bsdiff工具</a>，当前版本为4.3，然后解压：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf bsdiff-4.3.tar.gz</span><br><span class="line"><span class="built_in">cd</span> bsdiff-4.3</span><br></pre></td></tr></table></figure>
+<p>这里连主要包含两个c文件：bsdiff.c用于生成patch补丁文件，bspatch.c用于将patch文件与旧版本apk合成。我们需要修改一下makefile文件：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS          +=      -O3 -lbz2</span><br><span class="line">CC = gcc</span><br><span class="line"></span><br><span class="line">PREFIX          ?=      /usr/<span class="built_in">local</span></span><br><span class="line">INSTALL_PROGRAM ?=      <span class="variable">$&#123;INSTALL&#125;</span> -c -s -m 555</span><br><span class="line">INSTALL_MAN     ?=      <span class="variable">$&#123;INSTALL&#125;</span> -c -m 444</span><br><span class="line"></span><br><span class="line">all:            bsdiff bspatch</span><br><span class="line">bsdiff:         bsdiff.c</span><br><span class="line">        $(CC) bsdiff.c $(CFLAGS) -o bsdiff</span><br><span class="line">bspatch:        bspatch.c</span><br><span class="line">        $(CC) bspatch.c $(CFLAGS) -o bspatch</span><br><span class="line"></span><br><span class="line">install:</span><br><span class="line">        <span class="variable">$&#123;INSTALL_PROGRAM&#125;</span> bsdiff bspatch <span class="variable">$&#123;PREFIX&#125;</span>/bin</span><br><span class="line">        .ifndef WITHOUT_MAN</span><br><span class="line">        <span class="variable">$&#123;INSTALL_MAN&#125;</span> bsdiff.1 bspatch.1 <span class="variable">$&#123;PREFIX&#125;</span>/man/man1</span><br><span class="line">        .endif</span><br></pre></td></tr></table></figure>
+<p>然后我们执行<code>make</code>命令，这时候会在目录下生成<code>bsdiff</code>和<code>bspatch</code>两个可执行文件。生成patch文件可以使以下命令：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bsdiff oldFile newFile patchFile</span><br></pre></td></tr></table></figure>
+<p>这样服务器端，我们就得到了patch文件。</p>
+<h3 id="客户端配置">客户端配置</h3>
+<p>首先，我们先下载<a
+href="ftp://sourceware.org/pub/bzip2/bzip2-1.0.6.tar.gz"><code>bzip2</code>源文件</a>并解压，然后在<code>Android Studio</code>中新建一个<code>C++ Native</code>工程，然后在<code>cpp</code>目录下，新建一个<code>bzip2</code>目录，然后将刚才<code>bzip2</code>解压后目录中的所有c文件和h文件拷贝到这个新建的目录中，然后将<code>bspatch.c</code>文件拷贝到<code>cpp</code>目录下，并删除自动生成的<code>native-lib.cpp</code>文件，最后我们修改一下<code>CMakeLists.txt</code>文件以及<code>bspatch.c</code>文件。</p>
+<p><code>CMakeLists.txt</code>文件：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># For more information about using CMake with Android Studio, read the</span></span><br><span class="line"><span class="comment"># documentation: https://d.android.com/studio/projects/add-native-code.html</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Sets the minimum version of CMake required to build the native library.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">cmake_minimum_required</span>(VERSION <span class="number">3.4</span>.<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># Creates and names a library, sets it as either STATIC</span></span><br><span class="line"><span class="comment"># or SHARED, and provides the relative paths to its source code.</span></span><br><span class="line"><span class="comment"># You can define multiple libraries, and CMake builds them for you.</span></span><br><span class="line"><span class="comment"># Gradle automatically packages shared libraries with your APK.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">add_library</span>( <span class="comment"># Sets the name of the library.</span></span><br><span class="line">             bspatch</span><br><span class="line"></span><br><span class="line">             <span class="comment"># Sets the library as a shared library.</span></span><br><span class="line">             SHARED</span><br><span class="line"></span><br><span class="line">             <span class="comment"># Provides a relative path to your source file(s).</span></span><br><span class="line">             bspatch.c )</span><br><span class="line"></span><br><span class="line"><span class="comment"># Searches for a specified prebuilt library and stores the path as a</span></span><br><span class="line"><span class="comment"># variable. Because CMake includes system libraries in the search path by</span></span><br><span class="line"><span class="comment"># default, you only need to specify the name of the public NDK library</span></span><br><span class="line"><span class="comment"># you want to add. CMake verifies that the library exists before</span></span><br><span class="line"><span class="comment"># completing its build.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">find_library</span>( <span class="comment"># Sets the name of the path variable.</span></span><br><span class="line">              log-lib</span><br><span class="line"></span><br><span class="line">              <span class="comment"># Specifies the name of the NDK library that</span></span><br><span class="line">              <span class="comment"># you want CMake to locate.</span></span><br><span class="line">              log )</span><br><span class="line"></span><br><span class="line"><span class="comment"># Specifies libraries CMake should link to your target library. You</span></span><br><span class="line"><span class="comment"># can link multiple libraries, such as libraries you define in this</span></span><br><span class="line"><span class="comment"># build script, prebuilt third-party libraries, or system libraries.</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">target_link_libraries</span>( <span class="comment"># Specifies the target library.</span></span><br><span class="line">                       bspatch</span><br><span class="line"></span><br><span class="line">                       <span class="comment"># Links the target library to the log library</span></span><br><span class="line">                       <span class="comment"># included in the NDK.</span></span><br><span class="line">                       <span class="variable">$&#123;log-lib&#125;</span> )</span><br></pre></td></tr></table></figure>
+<p><code>bspatch.c</code>文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;err.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/bzlib.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/bzlib.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/crctable.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/compress.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/decompress.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/randtable.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/blocksort.c&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;bzip2/huffman.c&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function">JNIEXPORT jint JNICALL <span class="title">Java_com_example_smartupdate_MainActivity_patch</span><span class="params">(JNIEnv *env,</span></span></span><br><span class="line"><span class="function"><span class="params">        jobject instance,</span></span></span><br><span class="line"><span class="function"><span class="params">        jstring oldAPKPath_,</span></span></span><br><span class="line"><span class="function"><span class="params">        jstring newAPKPath_,</span></span></span><br><span class="line"><span class="function"><span class="params">        jstring patchPath_)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *oldAPKPath = (*env)-&gt;GetStringUTFChars(env, oldAPKPath_, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *newAPKPath = (*env)-&gt;GetStringUTFChars(env, newAPKPath_, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span> *patchPath = (*env)-&gt;GetStringUTFChars(env, patchPath_, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">int</span> argc = <span class="number">4</span>;</span><br><span class="line">    <span class="keyword">char</span> *argv[<span class="number">4</span>];</span><br><span class="line">    argv[<span class="number">0</span>] = <span class="string">&quot;bspatch&quot;</span>;</span><br><span class="line">    argv[<span class="number">1</span>] = oldAPKPath;</span><br><span class="line">    argv[<span class="number">2</span>] = newAPKPath;</span><br><span class="line">    argv[<span class="number">3</span>] = patchPath;</span><br><span class="line">    <span class="keyword">int</span> ret = bspatch_main(argc, argv);</span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env, oldAPKPath_, oldAPKPath);</span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env, newAPKPath_, newAPKPath);</span><br><span class="line">    (*env)-&gt;ReleaseStringUTFChars(env, patchPath_, patchPath);</span><br><span class="line">    <span class="keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//将原来的main函数，改名为bspatch_main函数，才能正常使用</span></span><br></pre></td></tr></table></figure>
+<p>这样编译之后，我们就可以得到<code>libbspatch.so</code>动态库了，增量更新有一个前提就是，必须有一个可供打patch的apk文件，我们可以在代码中来获取自己app的apk路径。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">companion</span> <span class="keyword">object</span> &#123;</span><br><span class="line">        <span class="keyword">init</span> &#123;</span><br><span class="line">            System.loadLibrary(<span class="string">&quot;bspatch&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">external</span> <span class="function"><span class="keyword">fun</span> <span class="title">patch</span><span class="params">(oldAPKPath: <span class="type">String</span>, newAPKPath: <span class="type">String</span>, patchPath: <span class="type">String</span>)</span></span>: <span class="built_in">Int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获取自己app的apk文件路径</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">fun</span> <span class="title">getAPKPath</span><span class="params">()</span></span>:String?&#123;</span><br><span class="line">    <span class="keyword">val</span> intent = Intent(Intent.ACTION_MAIN, <span class="literal">null</span>)</span><br><span class="line">    intent.addCategory(Intent.CATEGORY_LAUNCHER)</span><br><span class="line">    <span class="keyword">val</span> infoList = packageManager.queryIntentActivities(intent, <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">var</span> oldAPKPath:String? = <span class="literal">null</span></span><br><span class="line">    infoList.forEach &#123; app -&gt;</span><br><span class="line">        <span class="keyword">val</span> dir = app.activityInfo.applicationInfo.publicSourceDir</span><br><span class="line">        <span class="keyword">if</span> (dir.contains(packageName)) &#123;</span><br><span class="line">            oldAPKPath = dir</span><br><span class="line">            <span class="keyword">return</span><span class="symbol">@forEach</span></span><br><span class="line">        &#125;</span><br><span class="line">     &#125;</span><br><span class="line">    <span class="keyword">return</span> oldAPKPath</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样，我们就可以调用<code>patch</code>方法生成新的apk文件(MD5值的校验本文暂不提及)，从而进行升级了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Android-Practice/" rel="tag"># Android实战</a>
+              <a href="/tags/Incremental-Update/" rel="tag"># 增量更新</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/424bac86/" rel="prev" title="Android基础-Handler消息机制">
+                  <i class="fa fa-chevron-left"></i> Android基础-Handler消息机制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/550ac800/" rel="next" title="Jetpack之Lifecycle">
+                  Jetpack之Lifecycle <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '03bfb40540588eb419bef594e473ec0b',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/apple-touch-icon-next.png" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"sachil.xyz","root":"/","images":"/images","scheme":"Muse","version":"8.2.2","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12},"copycode":true,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}};
+  </script>
+<meta name="description" content="Kotlin中的泛型 Kotlin和Java一样，也可以有类型参数，即Kotlin同样支持泛型，同样的和Java一样，Kotlin中的泛型同样不直接支持型变。我们知道，在Java中我们可以使用上界通配符&lt;? extends T&gt;来支持协变，使用下界通配符&lt;? super T&gt;来支持逆变。在Kotlin的泛型中，没有通配符，而是使用out和in这两个关键字来实现同样的功">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kotlin中的泛型">
+<meta property="og:url" content="https://sachil.xyz/posts/e6adb2c5/index.html">
+<meta property="og:site_name" content="Sachil&#39;s Blog">
+<meta property="og:description" content="Kotlin中的泛型 Kotlin和Java一样，也可以有类型参数，即Kotlin同样支持泛型，同样的和Java一样，Kotlin中的泛型同样不直接支持型变。我们知道，在Java中我们可以使用上界通配符&lt;? extends T&gt;来支持协变，使用下界通配符&lt;? super T&gt;来支持逆变。在Kotlin的泛型中，没有通配符，而是使用out和in这两个关键字来实现同样的功">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-22T09:53:43.000Z">
+<meta property="article:modified_time" content="2023-06-20T15:46:03.207Z">
+<meta property="article:author" content="Sachil">
+<meta property="article:tag" content="泛型">
+<meta property="article:tag" content="Kotlin">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://sachil.xyz/posts/e6adb2c5/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>Kotlin中的泛型 | Sachil's Blog</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Sachil's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Sachil's Blog</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">为天地立心，为生民立命<br>为往圣继绝学，为天下安太平</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+        <li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#kotlin%E4%B8%AD%E7%9A%84%E6%B3%9B%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">Kotlin中的泛型</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97out%E5%92%8Cin"><span class="nav-number">1.1.</span> <span class="nav-text">关键字out和in</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E5%A4%84%E5%9E%8B%E5%8F%98"><span class="nav-number">1.2.</span> <span class="nav-text">声明处型变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%98%9F%E6%8A%95%E5%BD%B1"><span class="nav-number">1.3.</span> <span class="nav-text">星投影</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B%E7%BA%A6%E6%9D%9F"><span class="nav-number">1.4.</span> <span class="nav-text">泛型约束</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E5%8C%96%E7%B1%BB%E5%9E%8B%E5%8F%82%E6%95%B0reified"><span class="nav-number">1.5.</span> <span class="nav-text">实化类型参数reified</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Sachil"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Sachil</p>
+  <div class="site-description" itemprop="description">Android Python Kotlin</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">34</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/sachil" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;sachil" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:perryspcalpha@gmail.com" title="E-Mail → mailto:perryspcalpha@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://sachil.xyz/posts/e6adb2c5/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Sachil">
+      <meta itemprop="description" content="Android Python Kotlin">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Sachil's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Kotlin中的泛型
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-09-22 17:53:43" itemprop="dateCreated datePublished" datetime="2020-09-22T17:53:43+08:00">2020-09-22</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2023-06-20 23:46:03" itemprop="dateModified" datetime="2023-06-20T23:46:03+08:00">2023-06-20</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Kotlin/" itemprop="url" rel="index"><span itemprop="name">Kotlin</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="kotlin中的泛型">Kotlin中的泛型</h1>
+<p><code>Kotlin</code>和<code>Java</code>一样，也可以有类型参数，即<code>Kotlin</code>同样支持泛型，同样的和<code>Java</code>一样，<strong><code>Kotlin</code>中的泛型同样不直接支持型变</strong>。我们知道，在<code>Java</code>中我们可以使用上界通配符&lt;?
+extends T&gt;来支持<strong>协变</strong>，使用下界通配符&lt;? super
+T&gt;来支持<strong>逆变</strong>。在<code>Kotlin</code>的泛型中，没有通配符，而是使用<code>out</code>和<code>in</code>这两个关键字来实现同样的功能。另外不同于<code>Java</code>中在使用处型变，<code>Kotlin</code>也支持在声明处型变。下面我们就来仔细了解一下<code>Kotlin</code>中的泛型。</p>
+<span id="more"></span>
+<h2 id="关键字out和in">关键字out和in</h2>
+<p>和<code>Java</code>一样，<code>Kotlin</code>中的泛型本身也不支持型变的，但是我们可以使用<code>out</code>和<code>in</code>这两个关键字来让泛型支持型变：</p>
+<ul>
+<li>关键字<code>out</code>使泛型支持协变，协变得以让泛型的父类引用持有泛型子类的实例，等同于<code>Java</code>中的上界通配符&lt;?
+extends
+T&gt;，所以带来的限制也是一样的：只能读取不能修改(<em>修改指的是添加元素</em>)。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> intList = mutableListOf&lt;<span class="built_in">Int</span>&gt;()</span><br><span class="line">    intList.add(<span class="number">1</span>)</span><br><span class="line">    <span class="comment">//使用out让泛型支持协变，从而让泛型父类的引用可以持有泛型子类的对象</span></span><br><span class="line">    <span class="keyword">val</span> numberList: MutableList&lt;<span class="keyword">out</span> Number&gt; = intList</span><br><span class="line">    <span class="comment">//可作为Number读取</span></span><br><span class="line">    <span class="keyword">val</span> number: Number = numberList[<span class="number">0</span>]</span><br><span class="line">    numberList.add(<span class="number">2</span>) <span class="comment">//编译错误，out带来的限制是只能读取不能修改(修改指的是添加)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>关键字<code>in</code>使泛型支持逆变，逆变使泛型的子类引用可以持有泛型父类的实例，等同于<code>Java</code>中的下界通配符&lt;?
+super
+T&gt;，所以限制也是一致的：只能修改(<em>只能添加T或者其子类</em>)不能读取(<em>可以按照<code>Any?</code>的方式读取，为什么是<code>Any?</code>而不是<code>Any</code>？因为<code>Any</code>不能表示<code>null</code>值</em>)。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> anyList = mutableListOf&lt;Any&gt;()</span><br><span class="line">    anyList.add(<span class="number">1</span>)</span><br><span class="line">    anyList.add(<span class="number">2.0F</span>)</span><br><span class="line">    anyList.add(<span class="string">&quot;3&quot;</span>)</span><br><span class="line">    <span class="comment">//通过in让泛型支持逆变，逆变可以让泛型子类的引用持有泛型父类的对象</span></span><br><span class="line">    <span class="keyword">val</span> intList:MutableList&lt;<span class="keyword">in</span> <span class="built_in">Int</span>&gt; = anyList</span><br><span class="line">    <span class="comment">//可以添加Int及其子类</span></span><br><span class="line">    intList.add(<span class="number">4</span>)</span><br><span class="line">    intList.add(<span class="number">5L</span>) <span class="comment">//编译错误，只能添加Int及其子类</span></span><br><span class="line">    <span class="keyword">val</span> item: Any? = intList[<span class="number">1</span>] <span class="comment">//可以按照any的方式读取</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通常我们将只能读取的对象称为<strong>生产者</strong>，只能写入的对象称为<strong>消费者</strong>，在<code>Java</code>中上界通配符用于生产者，下界通配符用于消费者，这被称之为<strong><code>PECS</code>法则</strong>，<em>生产者-extends，消费者-super(Producer
+extends，Consumer
+super)</em>。在<code>Kotlin</code>中<code>out</code>表示生产者，<code>in</code>表示消费者。这应该更好理解，<code>out</code>表示只能往外拿，和生产者身份符合，而<code>in</code>表示只能往里放，和消费者身份符合。</p>
+<h2 id="声明处型变">声明处型变</h2>
+<p><code>Kotlin</code>中的泛型和<code>Java</code>中的泛型一样可以在使用处型变，只是在<code>Kotlin</code>中使用处型变称之为<strong>类型投影</strong>。除了类型投影之外，<code>Kotlin</code>还支持在声明处进行型变。也就是在声明类或者接口的时候，给泛型符号加上关键字<code>out</code>或者<code>in</code>，这样表示泛型参数<code>T</code>只会用于输出或者只会用于输入：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Producer</span>&lt;<span class="type">out T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">next</span><span class="params">()</span></span>: T &#123;</span><br><span class="line">        TODO(<span class="string">&quot;Not yet implemented&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Consumer</span>&lt;<span class="type">in T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">consume</span><span class="params">(item: <span class="type">T</span>)</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="comment">// 可以不用写关键字out</span></span><br><span class="line">    <span class="keyword">val</span> producer: Producer&lt;Number&gt; = Producer&lt;<span class="built_in">Float</span>&gt;()</span><br><span class="line">    <span class="keyword">val</span> number: Number = producer.next()</span><br><span class="line">    <span class="comment">// 可以不用写关键字in</span></span><br><span class="line">    <span class="keyword">val</span> consumer: Consumer&lt;<span class="built_in">Int</span>&gt; = Consumer&lt;Number&gt;()</span><br><span class="line">    consumer.consume(<span class="number">1</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们仅从字面量就可以看到类型投影与声明处型变的不同：类型投影中关键字<code>out</code>或<code>in</code>后面紧跟的是一个具体的类型，如<code>MutableList&lt;out Number&gt;</code>，而声明处型变中关键字<code>out</code>或<code>in</code>后面紧跟的是泛型参数，例如<code>class Producer&lt;out T&gt;</code>。</p>
+<p>类型投影的主要作用是为参数添加限定，避免不安全的操作，声明处型变给我们带来的好处就是，当使用的时候可以不用写关键字<code>out</code>或者<code>in</code>。</p>
+<h2 id="星投影">星投影</h2>
+<p>我们知道，在<code>Java</code>中使用无界通配符<code>&lt;?&gt;</code>来表示泛型实参是某一种特定的类型，但是却不知道具体的类型，在<code>Kotlin</code>中使用符号<code>*</code>来实现同样的功能。在<code>Java</code>中<code>&lt;?&gt;</code>实际上相当于<code>&lt;? extends Object&gt;</code>，而在<code>Kotlin</code>中<code>&lt;*&gt;</code>实际上相当于<code>&lt;* out Any?&gt;</code>。和<code>Java</code>不同的是，如果你使用声明处型变，并提供上界，那么这个上界在使用<code>&lt;*&gt;</code>的时候仍然存在，例如：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//声明处型变，并指定上界</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Producer</span>&lt;<span class="type">out T:Number</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">next</span><span class="params">()</span></span>: T &#123;</span><br><span class="line">        TODO(<span class="string">&quot;Not yet implemented&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> producer: Producer&lt;Number&gt; = Producer&lt;<span class="built_in">Float</span>&gt;()</span><br><span class="line">    <span class="comment">//使用星投影</span></span><br><span class="line">    <span class="keyword">val</span> starProducer:Producer&lt;*&gt; = producer</span><br><span class="line">    <span class="comment">//这里是以Number的方式读取，而不是Any？</span></span><br><span class="line">    <span class="keyword">val</span> number:Number = starProducer.next()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>由于<code>&lt;*&gt;</code>表示泛型实参是某一未知的特定类型，而进行写入操作的任何值都可能和这一特定的类型产生冲突，所以星投影不能写入，只能读取。</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Consumer</span>&lt;<span class="type">in T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">consume</span><span class="params">(item: <span class="type">T</span>)</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> consumer: Consumer&lt;<span class="built_in">Int</span>&gt; = Consumer&lt;Number&gt;()</span><br><span class="line">    consumer.consume(<span class="number">1</span>)</span><br><span class="line">    <span class="comment">//使用星投影</span></span><br><span class="line">    <span class="keyword">val</span> starConsumer: Consumer&lt;*&gt; = consumer</span><br><span class="line">    starConsumer.consume(<span class="number">2</span>) <span class="comment">//编译错误，不能写入</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="泛型约束">泛型约束</h2>
+<p>当声明一个泛型的时候，<code>Kotlin</code>允许给这个泛型类型形参添加约束条件，也就是把泛型的类型形参可接受的类型实参限制在特定的类型范围内。最常见的约束类型就是使用<code>out</code>来指定泛型类型形参的上界。</p>
+<p>一般情况下，当你有以下两种需求中的一种时，你就可以使用泛型约束：</p>
+<ul>
+<li>你需要在某个类型上访问特定的方法或属性时。</li>
+<li>你需要让函数返回某个特定类型时。</li>
+</ul>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : Number&gt;</span> <span class="title">printNumber</span><span class="params">(value: <span class="type">T</span>)</span></span> &#123;</span><br><span class="line">    <span class="comment">// value被约束为上界为Number，所以value可以使用Number中的方法</span></span><br><span class="line">    println(value.toInt())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回特定的类型</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T : Number&gt;</span> <span class="title">getFirstNumber</span><span class="params">(list: <span class="type">List</span>&lt;<span class="type">T</span>&gt;)</span></span>: T &#123;</span><br><span class="line">    <span class="keyword">return</span> list[<span class="number">0</span>]</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    printNumber(<span class="number">4L</span>)</span><br><span class="line">    <span class="comment">//返回的是Int</span></span><br><span class="line">    <span class="keyword">val</span> firstInt: <span class="built_in">Int</span> = getFirstNumber(listOf(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))</span><br><span class="line">    <span class="comment">//返回的是Float</span></span><br><span class="line">    <span class="keyword">val</span> firstFloat: <span class="built_in">Float</span> = getFirstNumber(listOf(<span class="number">1.0F</span>, <span class="number">2.0F</span>))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当泛型约束同时有多个约束条件时，需要使用<code>where</code>关键字:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Sing</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">sing</span><span class="params">(song: <span class="type">String</span>)</span></span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">open</span> <span class="class"><span class="keyword">class</span> <span class="title">Dancer</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">dance</span><span class="params">()</span></span> &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用关键字where来同时约束过个约束条件</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="type">&lt;T&gt;</span> <span class="title">party</span><span class="params">(player: <span class="type">T</span>)</span></span> <span class="keyword">where</span> T : Sing, T : Dancer &#123;</span><br><span class="line">    player.sing(<span class="string">&quot;Hello world&quot;</span>)</span><br><span class="line">    player.dance()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="实化类型参数reified">实化类型参数reified</h2>
+<p><code>Java</code>中的泛型是使用类型擦除来得以实现的，在编译的过程中泛型类型的实参的类型信息将会丢失，所以在运行的时候，是不知道泛型实参的具体类型的。<code>Kotlin</code>为了兼容<code>Java</code>，其泛型同样采用类型擦除，但是<code>Kotlin</code>却为我们留下了一扇窗-<code>reified</code>。</p>
+<p><code>reified</code>仅用于使用<code>inline</code>声明的内联函数，<code>reified</code>通常用于比较类型和获得一个类的<code>class</code>对象，例如我们可以这样使用：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> Any.<span class="title">isInstance</span><span class="params">()</span></span>: <span class="built_in">Boolean</span> = <span class="keyword">this</span> <span class="keyword">is</span> T</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    println(<span class="number">1.</span>isInstance&lt;<span class="built_in">Int</span>&gt;()) <span class="comment">//输出为true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再例如在我们平时使用Gson来反序列法json字符串时，需要将class对象作为参数进行传递，目的是让Gson知道你想要的类型:</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Response</span></span>(<span class="keyword">val</span> status: String) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> response = Gson().fromJson(<span class="string">&quot;&#123;\&quot;status\&quot;:\&quot;OK\&quot;&#125;&quot;</span>, Response::<span class="keyword">class</span>.java)</span><br><span class="line">    println(response.status)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>现在，我们可以使用<code>reified</code>实化类型参数来简化我们的代码：</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Response</span></span>(<span class="keyword">val</span> status: String) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">inline</span> <span class="function"><span class="keyword">fun</span> <span class="type">&lt;<span class="keyword">reified</span> T&gt;</span> Gson.<span class="title">fromJson</span><span class="params">(json: <span class="type">String</span>)</span></span>: T &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.fromJson(json, T::<span class="keyword">class</span>.java)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> response = Gson().fromJson&lt;Response&gt;(<span class="string">&quot;&#123;\&quot;status\&quot;:\&quot;OK\&quot;&#125;&quot;</span>)</span><br><span class="line">    println(response.status)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关于<code>reified</code>的原理，可以参考我的另一篇文章：<a
+href="https://sachil.xyz/posts/93d266b8/">Kotlin中的内联函数</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Generics/" rel="tag"># 泛型</a>
+              <a href="/tags/Kotlin/" rel="tag"># Kotlin</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/14df605f/" rel="prev" title="Kotlin中的let、with、run、apply和also">
+                  <i class="fa fa-chevron-left"></i> Kotlin中的let、with、run、apply和also
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2014 – 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fas fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Sachil</span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+
+
+
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+  
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('.gitalk-container', () => {
+  NexT.utils.getScript('https://cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '8246424c4f90686cab95',
+      clientSecret: '4875fbd00a62a67433b1dd053737bd7ee646ac07',
+      repo        : 'BlogComments',
+      owner       : 'sachil',
+      admin       : ['sachil'],
+      id          : '00c62f968f43ab974048a1d4f54288c0',
+      proxy       : 'https://sachil.xyz/login/oauth/access_token',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render(document.querySelector('.gitalk-container'));
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
